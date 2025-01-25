@@ -1,0 +1,46 @@
+@layer base {
+  :root {
+    --background: 30, 100%, 93%;
+    --foreground: 215 25% 27%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+    --primary: 28 100% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 215 14% 45%;
+    --accent: 28 100% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 28 100% 54%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 215 32% 10%; /* Dark blue-gray background */
+    --foreground: 0 0% 98%;
+    --card: 215 28% 13%; /* Slightly lighter than background */
+    --card-foreground: 0 0% 98%;
+    --popover: 215 28% 13%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 28 100% 54%; /* Keeping the orange accent */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 25% 18%; /* Dark blue-gray for secondary elements */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 215 25% 18%;
+    --muted-foreground: 215 14% 65%;
+    --accent: 28 100% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 25% 18%;
+    --input: 215 25% 18%;
+    --ring: 28 100% 54%;
+  }
+}
