@@ -10,7 +10,7 @@ const ApplicationLayout = ({ children }: PropsWithChildren) => {
       <NavbarSpacer />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 h-[calc(100vh-64px)] overflow-y-auto scrollbar-thin">
+        <main className="flex-1 h-[calc(100vh-64px)] overflow-y-auto overflow-x-hidden scrollbar-thin">
           {children}
         </main>
       </div>

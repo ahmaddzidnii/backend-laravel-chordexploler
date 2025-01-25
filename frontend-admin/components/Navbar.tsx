@@ -12,7 +12,7 @@ import { useSidebarStore } from "@/store/useSidebarStore";
 
 const Navbar = () => {
   const formSearchRef = useRef<HTMLFormElement>(null);
-  const { isOpen, toggle } = useSidebarStore();
+  const { toggle } = useSidebarStore();
 
   const handleResetButton = () => {
     formSearchRef.current?.reset();
@@ -22,7 +22,7 @@ const Navbar = () => {
     <header className="flex justify-between items-center py-[10px] mx-4">
       <TiThMenu
         onClick={toggle}
-        className="size-6 mr-4 md:hidden"
+        className="size-6 mr-4 xl:hidden"
       />
 
       <div>

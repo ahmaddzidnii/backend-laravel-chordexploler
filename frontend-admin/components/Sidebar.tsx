@@ -18,7 +18,7 @@ import { useSidebarStore } from "@/store/useSidebarStore";
 const sidebars = {
   MID_SECTION: [
     { title: "Dashboard", icon: MdDashboard, href: "/dashboard" },
-    { title: "Chords", icon: RiMusicAiLine, href: "/videos" },
+    { title: "Chords", icon: RiMusicAiLine, href: "/chords" },
     { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics" },
     { title: "Comments", icon: FaComment, href: "/comments" },
     { title: "Subscribers", icon: IoMdPeople, href: "/subscribers" },
@@ -33,7 +33,7 @@ const Sidebar = () => {
   return (
     <>
       <SidebarMobile />
-      <div className="w-[255px] border-r  flex-col justify-between h-[calc(100vh-56px)] ml-4 hidden md:flex">
+      <div className="w-[255px] border-r  flex-col justify-between h-[calc(100vh-56px)] ml-4 hidden xl:flex">
         <div className="w-full h-[208px] flex items-center flex-col justify-center">
           <Avatar className="size-28">
             <AvatarImage src="https://github.com/shadcn.png" />
@@ -51,6 +51,7 @@ const Sidebar = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
+              isActive={sidebar.href === "/chords"}
             />
           ))}
         </ul>
@@ -79,7 +80,7 @@ const SidebarMobile = () => {
     >
       <SheetContent
         side="left"
-        className="w-[255px] border-r flex-col justify-between  ml-4  flex md:hidden"
+        className="w-[255px] border-r flex-col justify-between  ml-4  flex xl:hidden"
       >
         <VisuallyHidden>
           <SheetTitle>Menu</SheetTitle>
@@ -101,6 +102,7 @@ const SidebarMobile = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
+              isActive={sidebar.href === "/chords"}
             />
           ))}
         </ul>
