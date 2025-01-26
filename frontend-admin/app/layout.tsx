@@ -15,10 +15,10 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Next.js + Laravel Oauth2",
-    default: "Next.js + Laravel Oauth2",
+    template: "%s | ChordXploler Studio",
+    default: "ChordXploler Studio",
   },
-  description: "Template oauth2 with nextjs and laravel, created by Ahmad Zidni Hidayat",
+  description: "ChordXploler Studio",
 };
 
 export default function RootLayout({

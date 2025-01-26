@@ -41,6 +41,8 @@ const RenderListChord = () => {
               "?" +
               createQueryString({
                 type: "all",
+                page: 1,
+                limit: 10,
               })
             }
           >
@@ -53,6 +55,8 @@ const RenderListChord = () => {
               "?" +
               createQueryString({
                 type: "latest",
+                page: 1,
+                limit: 10,
               })
             }
           >
@@ -65,6 +69,8 @@ const RenderListChord = () => {
               "?" +
               createQueryString({
                 type: "draft",
+                page: 1,
+                limit: 10,
               })
             }
           >

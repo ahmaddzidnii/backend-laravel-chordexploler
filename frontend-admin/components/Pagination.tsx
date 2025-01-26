@@ -57,7 +57,7 @@ const Pagination = ({
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     onItemsPerPageChange(value);
-    setCurrentPage(1); // Reset to the first page on items per page change
+    // setCurrentPage(1); // Reset to the first page on items per page change
   };
 
   return (
