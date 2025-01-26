@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { TanstackProvider } from "@/providers/TanstackProvider";
@@ -33,6 +34,7 @@ export default function RootLayout({
           <GoogleOAuthProvider clientId="941907082804-4j59igvjeps6fgagur3m47okvngr28lu.apps.googleusercontent.com">
             <AuthContextProvider>
               <Toaster />
+              <NextTopLoader />
               <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
             </AuthContextProvider>
           </GoogleOAuthProvider>
