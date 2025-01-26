@@ -86,7 +86,7 @@ const Navbar = () => {
           </Button>
         </div>
         <Avatar className="size-9">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src="https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </div>

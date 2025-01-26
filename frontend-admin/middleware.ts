@@ -1,29 +1,31 @@
 import { NextResponse } from "next/server";
 import { authMiddleware } from "@/helpers/authMiddleware";
 import { createRouteMatcher } from "./helpers/createRouteMatcher";
-
-// Helper functions for base64 encoding/decoding
-const encodeState = (url: string) => {
-  return Buffer.from(url).toString("base64");
-};
-
-const decodeState = (state: string) => {
-  try {
-    return Buffer.from(state, "base64").toString();
-  } catch (error) {
-    console.error("Invalid base64 state:", error);
-    return null;
-  }
-};
+import { decodeBase64, encodeBase64 } from "./helpers/base64";
 
 export default authMiddleware(async (auth, req) => {
-  const isPublicRoutes = createRouteMatcher(["/", "/auth(.*)", "/api/auth(.*)", "/dashboard(.*)"]);
+  const isPublicRoutes = createRouteMatcher([
+    "/",
+    "/auth(.*)",
+    "/api/auth(.*)",
+    "/chords(.*)",
+    "/dashboard(.*)",
+  ]);
   const isAuthRoutes = createRouteMatcher(["/auth(.*)"]);
+
+  if (req.nextUrl.pathname === "/") {
+    return NextResponse.redirect(
+      new URL(
+        process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/dashboard",
+        req.nextUrl
+      )
+    );
+  }
 
   // Get state from search params
   const searchParams = req.nextUrl.searchParams;
   const state = searchParams.get("state");
-  const decodedState = state ? decodeState(state) : null;
+  const decodedState = state ? decodeBase64(state) : null;
 
   // Handle state parameter for unauthenticated users
   if (!auth.isAuthenticated && !isPublicRoutes(req)) {
@@ -31,7 +33,7 @@ export default authMiddleware(async (auth, req) => {
 
     // Add the current URL as encoded state if none is provided
     if (!state) {
-      loginUrl.searchParams.set("state", encodeState(req.nextUrl.pathname + req.nextUrl.search));
+      loginUrl.searchParams.set("state", encodeBase64(req.nextUrl.pathname + req.nextUrl.search));
     } else {
       loginUrl.searchParams.set("state", state);
     }

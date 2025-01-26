@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { SidebarItem } from "./SidebarItem";
 import { CiSettings } from "react-icons/ci";
@@ -14,11 +14,12 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useSidebarStore } from "@/store/useSidebarStore";
+import { usePathname } from "next/navigation";
 
 const sidebars = {
   MID_SECTION: [
     { title: "Dashboard", icon: MdDashboard, href: "/dashboard" },
-    { title: "Chords", icon: RiMusicAiLine, href: "/chords" },
+    { title: "Chords", icon: RiMusicAiLine, href: "/chords?type=all&page=1&limit=50" },
     { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics" },
     { title: "Comments", icon: FaComment, href: "/comments" },
     { title: "Subscribers", icon: IoMdPeople, href: "/subscribers" },
@@ -30,13 +31,14 @@ const sidebars = {
 };
 
 const Sidebar = () => {
+  const pathname = usePathname();
   return (
     <>
       <SidebarMobile />
       <div className="w-[255px] border-r  flex-col justify-between h-[calc(100vh-56px)] ml-4 hidden xl:flex">
         <div className="w-full h-[208px] flex items-center flex-col justify-center">
           <Avatar className="size-28">
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src="https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="text-center mt-2">
@@ -51,7 +53,7 @@ const Sidebar = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
-              isActive={sidebar.href === "/chords"}
+              isActive={pathname.includes(sidebar.href)}
             />
           ))}
         </ul>
@@ -71,7 +73,12 @@ const Sidebar = () => {
 };
 
 const SidebarMobile = () => {
-  const { isOpen, toggle } = useSidebarStore();
+  const { isOpen, toggle, close } = useSidebarStore();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    close();
+  }, [pathname]);
   return (
     <Sheet
       modal={false}
@@ -102,7 +109,7 @@ const SidebarMobile = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
-              isActive={sidebar.href === "/chords"}
+              isActive={pathname.includes(sidebar.href)}
             />
           ))}
         </ul>
