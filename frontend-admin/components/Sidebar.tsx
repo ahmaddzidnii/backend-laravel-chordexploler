@@ -18,15 +18,20 @@ import { usePathname } from "next/navigation";
 
 const sidebars = {
   MID_SECTION: [
-    { title: "Dashboard", icon: MdDashboard, href: "/dashboard" },
-    { title: "Chords", icon: RiMusicAiLine, href: "/chords?type=all&page=1&limit=50" },
-    { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics" },
-    { title: "Comments", icon: FaComment, href: "/comments" },
-    { title: "Subscribers", icon: IoMdPeople, href: "/subscribers" },
+    { title: "Dashboard", icon: MdDashboard, href: "/dashboard", rootName: "dashboard" },
+    {
+      title: "Chords",
+      icon: RiMusicAiLine,
+      href: "/chords?type=all&page=1&limit=50",
+      rootName: "chords",
+    },
+    { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics", rootName: "analytics" },
+    { title: "Comments", icon: FaComment, href: "/comments", rootName: "comments" },
+    { title: "Subscribers", icon: IoMdPeople, href: "/subscriber", rootName: "subscriber" },
   ],
   BOTTOM_SECTION: [
-    { title: "Settings", icon: CiSettings, href: "/settings" },
-    { title: "Feedback", icon: RiFeedbackFill, href: "/settings" },
+    { title: "Settings", icon: CiSettings, href: "/settings", rootName: "settings" },
+    { title: "Feedback", icon: RiFeedbackFill, href: "/settings", rootName: "feedback" },
   ],
 };
 
@@ -53,7 +58,7 @@ const Sidebar = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
-              isActive={pathname.includes(sidebar.href)}
+              isActive={pathname.includes(sidebar.rootName)}
             />
           ))}
         </ul>
@@ -109,7 +114,7 @@ const SidebarMobile = () => {
               title={sidebar.title}
               icon={sidebar.icon}
               href={sidebar.href}
-              isActive={pathname.includes(sidebar.href)}
+              isActive={pathname.includes(sidebar.rootName)}
             />
           ))}
         </ul>

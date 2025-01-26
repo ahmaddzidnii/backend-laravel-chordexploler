@@ -17,6 +17,7 @@ import {
 interface PaginationProps {
   totalItems: number;
   initialPage: number;
+  initialItemsPerPage: number;
   itemsPerPageOptions: number[];
   onPageChange: (newPage: number) => void;
   onItemsPerPageChange: (value: number) => void;
@@ -25,12 +26,15 @@ interface PaginationProps {
 const Pagination = ({
   totalItems,
   initialPage,
+  initialItemsPerPage,
   itemsPerPageOptions,
   onPageChange,
   onItemsPerPageChange,
 }: PaginationProps) => {
   const [currentPage, setCurrentPage] = useState(initialPage ?? 1);
-  const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
+  const [itemsPerPage, setItemsPerPage] = useState(
+    itemsPerPageOptions.includes(initialItemsPerPage) ? initialItemsPerPage : itemsPerPageOptions[0]
+  );
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -57,7 +61,7 @@ const Pagination = ({
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     onItemsPerPageChange(value);
-    // setCurrentPage(1); // Reset to the first page on items per page change
+    setCurrentPage(1); // Reset to the first page on items per page change
   };
 
   return (
