@@ -3,39 +3,40 @@
 use App\Http\Controllers\Auth\Oauth\GoogleController;
 use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Common\UserController;
+use App\Http\Controllers\Studio\Features\SongController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-Route::post('/upload', function (Request $request) {
-    $request->validate([
-        'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+// Route::post('/upload', function (Request $request) {
+//     $request->validate([
+//         'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//     ]);
 
-    // Dapatkan file dari request
-    $file = $request->file('file');
+//     // Dapatkan file dari request
+//     $file = $request->file('file');
 
-    // Generate nama unik untuk file
-    $fileName = uniqid("chxp") . '.' . $file->getClientOriginalExtension();
+//     // Generate nama unik untuk file
+//     $fileName = uniqid("chxp") . '.' . $file->getClientOriginalExtension();
 
 
-    // Unggah file ke S3
-    $path = Storage::disk('s3')->putFileAs('images', $file, $fileName, ['visibility' => 'public']);
+//     // Unggah file ke S3
+//     $path = Storage::disk('s3')->putFileAs('images', $file, $fileName, ['visibility' => 'public']);
 
-    if (!$path) {
-        return response()->json([
-            'error' => 'Failed to upload image.'
-        ], 500);
-    }
+//     if (!$path) {
+//         return response()->json([
+//             'error' => 'Failed to upload image.'
+//         ], 500);
+//     }
 
-    // Dapatkan URL file yang diunggah
-    $url = Storage::url($path);
+//     // Dapatkan URL file yang diunggah
+//     $url = Storage::url($path);
 
-    return response()->json([
-        'success' => 'You have successfully upload image.',
-        'url' => $url
-    ]);
-});
+//     return response()->json([
+//         'success' => 'You have successfully upload image.',
+//         'url' => $url
+//     ]);
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +116,12 @@ Route::group(['middleware' => 'throttle:api'], function () {
             'as' => 'users.'
         ], function () {
             Route::get('/', [UserController::class, 'users']);
+        });
+
+        // Studio Features
+        Route::group(['prefix' => 'studio', 'as' => 'studio.'], function () {
+            // Songs
+            Route::apiResource('/songs', SongController::class);
         });
 
 

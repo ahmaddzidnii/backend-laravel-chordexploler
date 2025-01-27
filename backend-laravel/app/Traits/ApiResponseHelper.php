@@ -8,15 +8,17 @@ trait ApiResponseHelper
     {
         $response = [
             'code' => $code,
-            'data' => $data,
         ];
 
         if ($pagination) {
             $response['pagination'] = $pagination;
         }
 
+        $response['data'] = $data;
+
         return response()->json($response, $code);
     }
+
 
     public function errorResponse($error, $code = 400)
     {
@@ -26,5 +28,20 @@ trait ApiResponseHelper
         ];
 
         return response()->json($response, $code);
+    }
+
+    protected function getPaginationData($paginator)
+    {
+        return [
+            'last_visible_page' => $paginator->lastPage(),
+            'has_next_page' => $paginator->hasMorePages(),
+            'has_prev_page' => $paginator->previousPageUrl() ? true : false,
+            'current_page' => $paginator->currentPage(),
+            'items' => [
+                'per_page' => $paginator->perPage(),
+                'count' => $paginator->count(),
+                'total' => $paginator->total()
+            ]
+        ];
     }
 }
