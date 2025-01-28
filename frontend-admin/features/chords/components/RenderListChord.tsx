@@ -1,15 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 import { IoFilter } from "react-icons/io5";
+import { IoMdClose } from "react-icons/io";
+import { useState, useCallback, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
 import Pagination from "@/components/Pagination";
-import { IoMdClose } from "react-icons/io";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSongs } from "../api/songs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { getSongs } from "@/features/chords/api/songs";
 import { DataRenderer } from "@/components/DataRenderer";
 
 const EmptyFallback = () => {
@@ -144,7 +145,22 @@ const RenderListChord = () => {
         </div>
 
         {selectedItems.length > 0 && (
-          <div className="bg-muted-foreground/80 text-background flex">
+          <motion.div
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            layout
+            transition={{
+              layout: {
+                duration: 0.5,
+                ease: "easeInOut",
+              },
+              opacity: {
+                duration: 0.3,
+              },
+            }}
+            className="bg-muted-foreground/80 text-background flex shadow-lg rounded-md overflow-hidden"
+          >
             <div className="border-e my-1">
               <p className="p-3">{selectedItems.length}&nbsp;selected</p>
             </div>
@@ -158,7 +174,7 @@ const RenderListChord = () => {
             >
               <IoMdClose className="size-6" />
             </button>
-          </div>
+          </motion.div>
         )}
 
         <div
