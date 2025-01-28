@@ -1,5 +1,6 @@
 import RenderListChord from "@/features/chords/components/RenderListChord";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Chords",
@@ -17,7 +18,9 @@ export default function ChordsPage() {
           My Chord Vault
         </p>
       </header>
-      <RenderListChord />
+      <Suspense>
+        <RenderListChord />
+      </Suspense>
     </div>
   );
 }
