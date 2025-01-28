@@ -23,8 +23,18 @@ class GoogleController extends Controller
         $accessToken = $credentials['access_token'];
         $refreshToken = $credentials['refresh_token'];
 
-        $accessTokenCookie = cookie(name: 'access_token', value: $accessToken, secure: env("APP_ENV") != "local", httpOnly: false);
-        $cookieRefreshToken = cookie(name: 'refresh_token', value: $refreshToken, secure: env("APP_ENV") != "local", httpOnly: true);
+        $accessTokenCookie = cookie(
+            name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
+            value: $accessToken,
+            secure: env("APP_ENV") != "local",
+            httpOnly: false
+        );
+        $cookieRefreshToken = cookie(
+            name: config('cookies.COOKIE_NAME_REFRESH_TOKEN'),
+            value: $refreshToken,
+            secure: env("APP_ENV") != "local",
+            httpOnly: true
+        );
 
         return $this->successResponse([
             'access_token' => $accessToken,

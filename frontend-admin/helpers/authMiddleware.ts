@@ -1,6 +1,8 @@
-import { AuthUser } from "@/types";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";
+
+import { AuthUser } from "@/types";
+import { COOKIE_NAME_ACCESS_TOKEN, COOKIE_NAME_REFRESH_TOKEN } from "@/config/cookies";
 
 interface AuthObject {
   isAuthenticated: boolean;
@@ -39,8 +41,8 @@ async function attemptTokenRefresh(refreshToken: string) {
 export function authMiddleware(callback: MiddlewareCallback) {
   return async (req: NextRequest) => {
     try {
-      const accessToken = req.cookies.get("access_token")?.value;
-      const refreshToken = req.cookies.get("refresh_token")?.value;
+      const accessToken = req.cookies.get(COOKIE_NAME_ACCESS_TOKEN)?.value;
+      const refreshToken = req.cookies.get(COOKIE_NAME_REFRESH_TOKEN)?.value;
 
       // Jika tidak ada kedua token, return unauthenticated
       if (!accessToken && !refreshToken) {
@@ -75,7 +77,7 @@ export function authMiddleware(callback: MiddlewareCallback) {
           const response = result instanceof NextResponse ? result : NextResponse.next();
 
           // Set the new access token
-          response.cookies.set("access_token", newAccessToken, {
+          response.cookies.set(COOKIE_NAME_ACCESS_TOKEN, newAccessToken, {
             httpOnly: false,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
@@ -89,8 +91,8 @@ export function authMiddleware(callback: MiddlewareCallback) {
           const finalResponse = response instanceof NextResponse ? response : NextResponse.next();
 
           // Clear both tokens on refresh failure
-          finalResponse.cookies.delete("access_token");
-          finalResponse.cookies.delete("refresh_token");
+          finalResponse.cookies.delete(COOKIE_NAME_ACCESS_TOKEN);
+          finalResponse.cookies.delete(COOKIE_NAME_REFRESH_TOKEN);
 
           return finalResponse;
         }
@@ -120,8 +122,8 @@ export function authMiddleware(callback: MiddlewareCallback) {
           const response = await callback(createAuthObject(false, null), req);
           const finalResponse = response instanceof NextResponse ? response : NextResponse.next();
 
-          finalResponse.cookies.delete("access_token");
-          finalResponse.cookies.delete("refresh_token");
+          finalResponse.cookies.delete(COOKIE_NAME_ACCESS_TOKEN);
+          finalResponse.cookies.delete(COOKIE_NAME_REFRESH_TOKEN);
 
           return finalResponse;
         }
@@ -151,7 +153,7 @@ export function authMiddleware(callback: MiddlewareCallback) {
 
             const response = result instanceof NextResponse ? result : NextResponse.next();
 
-            response.cookies.set("access_token", newAccessToken, {
+            response.cookies.set(COOKIE_NAME_ACCESS_TOKEN, newAccessToken, {
               httpOnly: false,
               secure: process.env.NODE_ENV === "production",
               sameSite: "lax",
@@ -164,8 +166,8 @@ export function authMiddleware(callback: MiddlewareCallback) {
             const response = await callback(createAuthObject(false, null), req);
             const finalResponse = response instanceof NextResponse ? response : NextResponse.next();
 
-            finalResponse.cookies.delete("access_token");
-            finalResponse.cookies.delete("refresh_token");
+            finalResponse.cookies.delete(COOKIE_NAME_ACCESS_TOKEN);
+            finalResponse.cookies.delete(COOKIE_NAME_REFRESH_TOKEN);
 
             return finalResponse;
           }

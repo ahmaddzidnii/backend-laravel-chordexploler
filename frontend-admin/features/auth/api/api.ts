@@ -1,6 +1,8 @@
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
+import { COOKIE_NAME_ACCESS_TOKEN, COOKIE_NAME_REFRESH_TOKEN } from "@/config/cookies";
+
 // Create axios instance
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL, // Replace with your API base URL
@@ -17,7 +19,7 @@ const refreshAccessToken = async () => {
     const { access_token } = response.data.data;
 
     // Update cookies with new tokens
-    setCookie("access_token", access_token);
+    setCookie(COOKIE_NAME_ACCESS_TOKEN, access_token);
 
     return access_token;
   } catch (error) {
@@ -31,7 +33,7 @@ api.interceptors.response.use(
   (response) => response, // Pass through successful responses
   async (error) => {
     const originalRequest = error.config;
-    const refreshToken = getCookie("refresh_token");
+    const refreshToken = getCookie(COOKIE_NAME_REFRESH_TOKEN);
     if (refreshToken) {
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true; // Mark this request as retried
@@ -42,13 +44,13 @@ api.interceptors.response.use(
           return api(originalRequest); // Retry the original request with the new token
         } catch (refreshError) {
           console.error("Refresh token failed", refreshError);
-          deleteCookie("access_token");
+          deleteCookie(COOKIE_NAME_ACCESS_TOKEN);
           return Promise.reject(refreshError);
         }
       }
     } else {
-      deleteCookie("access_token");
-      deleteCookie("refresh_token");
+      deleteCookie(COOKIE_NAME_ACCESS_TOKEN);
+      deleteCookie(COOKIE_NAME_REFRESH_TOKEN);
     }
 
     return Promise.reject(error);

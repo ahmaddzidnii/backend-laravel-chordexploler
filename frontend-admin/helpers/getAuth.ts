@@ -4,6 +4,8 @@ import * as jose from "jose";
 import { cookies } from "next/headers";
 import { AuthUser } from "@/types";
 
+import { COOKIE_NAME_ACCESS_TOKEN, COOKIE_NAME_REFRESH_TOKEN } from "@/config/cookies";
+
 type AuthObject = {
   isAuthenticated: boolean;
   user: AuthUser | null;
@@ -14,7 +16,7 @@ const createAuthObject = (isAuthenticated: boolean, user: AuthUser | null): Auth
   isAuthenticated,
   user,
   getAccessToken: async () => {
-    const accessToken = (await cookies()).get("access_token")?.value;
+    const accessToken = (await cookies()).get(COOKIE_NAME_ACCESS_TOKEN)?.value;
     return accessToken ?? null;
   },
 });
@@ -43,8 +45,8 @@ async function attemptTokenRefresh(refreshToken: string) {
 
 export async function getAuth(): Promise<AuthObject> {
   try {
-    const accessToken = (await cookies()).get("access_token")?.value;
-    const refreshToken = (await cookies()).get("refresh_token")?.value;
+    const accessToken = (await cookies()).get(COOKIE_NAME_ACCESS_TOKEN)?.value;
+    const refreshToken = (await cookies()).get(COOKIE_NAME_REFRESH_TOKEN)?.value;
 
     // Jika tidak ada kedua token, return unauthenticated
     if (!accessToken && !refreshToken) {

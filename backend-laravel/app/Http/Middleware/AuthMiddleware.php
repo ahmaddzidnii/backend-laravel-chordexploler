@@ -26,20 +26,20 @@ class AuthMiddleware
     {
 
         // Get refresh token from cookie, bearer token, or query string
-        $accsessToken = $request->cookie('refresh_token') ?? $request->bearerToken() ?? $request->query('access_token');
+        $token = $request->cookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN')) ?? $request->bearerToken() ?? $request->query('access_token');
 
-        if (!$accsessToken) {
+        if (!$token) {
             throw new AuthException();
         }
 
         try {
-            $validatedToken = $this->jwtHelpers->validateToken($accsessToken);
+            $validatedToken = $this->jwtHelpers->validateToken($token);
         } catch (\Exception $e) {
             throw new AuthException($e->getMessage());
         }
 
         // Check if token is blacklisted
-        if ($this->tokenRepository->isTokenBlacklisted($accsessToken)) {
+        if ($this->tokenRepository->isTokenBlacklisted($token)) {
             throw new AuthException();
         }
 

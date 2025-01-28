@@ -22,7 +22,7 @@ class TokenController extends Controller
     public function refresh(Request $request)
     {
         // Get refresh token from cookie, bearer token, or query string
-        $refreshToken = $request->cookie('refresh_token') ?? $request->bearerToken() ?? $request->query('refresh_token');
+        $refreshToken = $request->cookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN')) ?? $request->bearerToken() ?? $request->query('refresh_token');
 
         if (!$refreshToken) {
             throw new AuthException("Token is not given", 401);
@@ -30,7 +30,7 @@ class TokenController extends Controller
 
         $data = $this->authService->refreshAccessToken($refreshToken);
         $newAccessTokenCookie = cookie(
-            name: 'access_token',
+            name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
             value: $data['access_token'],
             secure: env("APP_ENV") != "local",
             httpOnly: false
@@ -40,8 +40,8 @@ class TokenController extends Controller
 
     public function logout(Request $request)
     {
-        $refreshToken = $request->cookie('refresh_token') ?? $request->bearerToken() ?? $request->query('refresh_token');
-        $accessToken = $request->bearerToken() ?? $request->query('access_token') ?? $request->cookie('access_token');
+        $refreshToken = $request->cookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN')) ?? $request->bearerToken() ?? $request->query('refresh_token');
+        $accessToken = $request->bearerToken() ?? $request->query('access_token') ?? $request->cookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
 
         if (!$refreshToken || !$accessToken) {
             throw new Exception("Token is not provided", 401);
@@ -55,6 +55,6 @@ class TokenController extends Controller
         }
 
         $this->authService->handleLogout($accessToken, $refreshToken);
-        return $this->successResponse("OK")->withoutCookie('refresh_token')->withoutCookie('access_token');
+        return $this->successResponse("OK")->withoutCookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN'))->withoutCookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
     }
 }

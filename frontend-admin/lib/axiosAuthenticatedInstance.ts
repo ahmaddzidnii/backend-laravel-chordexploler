@@ -1,5 +1,6 @@
 import axios from "axios";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { COOKIE_NAME_ACCESS_TOKEN, COOKIE_NAME_REFRESH_TOKEN } from "@/config/cookies";
 
 export const axiosAuthenticatedInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -15,10 +16,7 @@ const refreshAccessToken = async () => {
     });
 
     const { access_token } = response.data.data;
-
-    // Update cookies with new tokens
     setCookie("access_token", access_token);
-
     return access_token;
   } catch (error) {
     console.error("Failed to refresh token", error);
@@ -26,32 +24,44 @@ const refreshAccessToken = async () => {
   }
 };
 
+// Function to handle logout
+const handleLogout = () => {
+  deleteCookie(COOKIE_NAME_ACCESS_TOKEN);
+  deleteCookie(COOKIE_NAME_REFRESH_TOKEN);
+  window.location.href = process.env.NEXT_PUBLIC_LOGIN_URL ?? "/auth/login";
+};
+
 // Axios interceptor
 axiosAuthenticatedInstance.interceptors.response.use(
-  (response) => response, // Pass through successful responses
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    const refreshToken = getCookie("refresh_token");
-    if (refreshToken) {
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true; // Mark this request as retried
 
+    // Handle 401 Unauthorized error
+    if (error.response?.status === 401) {
+      const refreshToken = getCookie(COOKIE_NAME_REFRESH_TOKEN);
+
+      // If we have a refresh token and haven't retried yet
+      if (refreshToken && !originalRequest._retry) {
+        originalRequest._retry = true;
         try {
           const newAccessToken = await refreshAccessToken();
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          return axiosAuthenticatedInstance(originalRequest); // Retry the original request with the new token
+          return axiosAuthenticatedInstance(originalRequest);
         } catch (refreshError) {
+          // If refresh token fails, logout user
           console.error("Refresh token failed", refreshError);
-          deleteCookie("access_token");
+          handleLogout();
           return Promise.reject(refreshError);
         }
+      } else {
+        // No refresh token or already retried, logout user
+        handleLogout();
+        return Promise.reject(error);
       }
-    } else {
-      deleteCookie("access_token");
-      deleteCookie("refresh_token");
-      window.location.href = process.env.NEXT_PUBLIC_LOGIN_URL ?? "/auth/login";
     }
 
+    // For all other errors, just reject the promise
     return Promise.reject(error);
   }
 );

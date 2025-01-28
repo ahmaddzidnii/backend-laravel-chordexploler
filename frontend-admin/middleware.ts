@@ -4,13 +4,7 @@ import { createRouteMatcher } from "./helpers/createRouteMatcher";
 import { decodeBase64, encodeBase64 } from "./helpers/base64";
 
 export default authMiddleware(async (auth, req) => {
-  const isPublicRoutes = createRouteMatcher([
-    "/",
-    "/auth(.*)",
-    "/api/auth(.*)",
-    "/chords(.*)",
-    "/dashboard(.*)",
-  ]);
+  const isPublicRoutes = createRouteMatcher(["/", "/auth(.*)", "/api/auth(.*)"]);
   const isAuthRoutes = createRouteMatcher(["/auth(.*)"]);
 
   if (req.nextUrl.pathname === "/") {
@@ -75,39 +69,3 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-
-// import { NextResponse } from "next/server";
-
-// import { authMiddleware } from "@/helpers/authMiddleware";
-// import { createRouteMatcher } from "./helpers/createRouteMatcher";
-
-// export default authMiddleware(async (auth, req) => {
-//   const isPublicRoutes = createRouteMatcher(["/", "/auth(.*)", "/api/auth(.*)"]);
-//   const isAuthRoutes = createRouteMatcher(["/auth(.*)"]);
-
-//   if (!auth.isAuthenticated && !isPublicRoutes(req)) {
-//     return NextResponse.redirect(
-//       new URL(process.env.NEXT_PUBLIC_PATH_LOGIN_PAGE ?? "/auth/login", req.nextUrl)
-//     );
-//   }
-
-//   if (auth.isAuthenticated && isAuthRoutes(req)) {
-//     return NextResponse.redirect(
-//       new URL(
-//         process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/dashboard",
-//         req.nextUrl
-//       )
-//     );
-//   }
-
-//   return NextResponse.next();
-// });
-
-// export const config = {
-//   matcher: [
-//     // Skip Next.js internals and all static files, unless found in search params
-//     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-//     // Always run for API routes
-//     "/(api|trpc)(.*)",
-//   ],
-// };
