@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Key;
 use App\Models\Song;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class SongFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => "82dc8b47-7d34-41a4-acd6-4e425f3d799c",
+            'user_id' => null,
             'title' => $this->faker->sentence(3),
             'artist' => implode(', ', array_map(function () {
                 return $this->faker->name;
@@ -31,33 +32,21 @@ class SongFactory extends Factory
             'youtube_url' => "https://youtu.be/ZeFpigRaXbI?si=j-sC3yNkCRK_0qzE",
             'released_year' => $this->faker->year(),
             'publisher' => $this->faker->company(),
-            'key' => implode(', ', $this->faker->randomElements([
-                'C',
-                'Cm',
-                'G',
-                'Gm',
-                'D',
-                'Dm',
-                'A',
-                'Am',
-                'E',
-                'Em',
-                'F',
-                'Fm',
-                'Bb',
-                'Bbm',
-                'Eb',
-                'Ebm',
-                'Ab',
-                'Abm',
-                'Db',
-                'Dbm',
-                'Gb',
-                'Gbm',
-                'B',
-                'Bm'
-            ], $this->faker->numberBetween(1, 3))), // Kunci dengan pemisah koma
             'bpm' => $this->faker->numberBetween(60, 200), // BPM acak
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Song $song) {
+            $keys = Key::inRandomOrder()->limit(rand(1, 3))->pluck('id')->toArray();
+            $pivotData = [];
+
+            foreach ($keys as $keyId) {
+                $pivotData[$keyId] = ['id' => Str::uuid()]; // Pakai UUID di pivot
+            }
+
+            $song->keys()->attach($pivotData);
+        });
     }
 }

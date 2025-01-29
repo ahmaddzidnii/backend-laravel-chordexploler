@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\Oauth\GoogleController;
 use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Common\UserController;
-use App\Http\Controllers\Studio\Features\SongController;
+use App\Http\Controllers\Studio\SongController;
+use App\Http\Controllers\Studio\KeyController;
+use App\Models\Key;
+use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -35,6 +38,16 @@ use Illuminate\Support\Facades\Storage;
 //     return response()->json([
 //         'success' => 'You have successfully upload image.',
 //         'url' => $url
+//     ]);
+// });
+
+// Route::get('/keys', function () {
+//     // $song = Song::with('keys')->get();
+
+//     $keys = Key::with('songs')->get();
+
+//     return response()->json([
+//         'data' => $keys
 //     ]);
 // });
 
@@ -122,6 +135,9 @@ Route::group(['middleware' => 'throttle:api'], function () {
         Route::group(['prefix' => 'studio', 'as' => 'studio.'], function () {
             // Songs
             Route::apiResource('/songs', SongController::class);
+
+            // Keys
+            Route::get('/keys', KeyController::class);
         });
 
 

@@ -16,9 +16,9 @@ class UserController extends Controller
         protected readonly UserRepository $userRepository
     ) {}
 
-    public function users(Request $request)
+    public function users()
     {
-        $userId = $request->attributes->get('user')->sub;
+        $userId = authContext()->getAuthUser()->sub;
         $user = $this->userRepository->findById($userId);
 
         return $this->successResponse(UserResource::make($user));

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Studio\Features;
+namespace App\Http\Controllers\Studio;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Studio\SongResource;
@@ -21,9 +21,10 @@ class SongController extends Controller
         $limit = $limit > 50 ? 50 : $limit;
         $limit = $limit < 10 ? 10 : $limit;
 
-        $userId = request()->attributes->get('user')->sub;
+        $userId = authContext()->getAuthUser()->sub;
 
-        $songs = Song::without('sections')->where('user_id', $userId)->paginate($limit);
+        // $songs = Song::without('sections')->where('user_id', $userId)->paginate($limit);
+        $songs = Song::without('sections')->with('keys')->paginate($limit);
 
         return $this->successResponse(SongResource::collection($songs->items()), pagination: $this->getPaginationData($songs));
     }
@@ -42,7 +43,7 @@ class SongController extends Controller
     public function show(string $id)
     {
 
-        $userId = request()->attributes->get('user')->sub;
+        $userId = authContext()->getAuthUser()->sub;
 
         $song = Song::where('id', $id)->where('id', $id)->with('sections')->first();
 

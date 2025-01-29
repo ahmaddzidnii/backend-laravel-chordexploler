@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('songs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title');
+            $table->string('title_lower');
             $table->string('artist');
+            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->string('slug')->unique();
             $table->string('cover')->nullable();
+            $table->string('genre')->nullable();
             $table->string('youtube_url')->nullable();
             $table->integer('released_year')->nullable();
             $table->string('publisher')->nullable();
-            $table->string('key');
             $table->string('bpm')->nullable();
             $table->timestamps();
 
@@ -47,5 +49,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('songs');
+        Schema::dropIfExists('sections');
     }
 };

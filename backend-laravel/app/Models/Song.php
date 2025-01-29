@@ -25,10 +25,13 @@ class Song extends Model
         'artist',
         'slug',
         'cover',
+        'status',
+        'genre',
         'youtube_url',
         'released_year',
         'publisher',
-        'key',
+        'bpm',
+        'title_lower',
     ];
 
     protected static function boot()
@@ -40,6 +43,12 @@ class Song extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+    }
+
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = $value;
+        $this->attributes['title_lower'] = strtolower(str_replace(' ', '', trim($value)));
     }
 
     protected function casts()
@@ -58,5 +67,10 @@ class Song extends Model
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
+    }
+
+    public function keys()
+    {
+        return $this->belongsToMany(Key::class, 'songs_keys');
     }
 }

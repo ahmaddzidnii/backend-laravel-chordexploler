@@ -20,16 +20,23 @@ class SongResource extends JsonResource
             'title' => $this->title,
             'artist' => explode(', ', $this->artist),
             'slug' => $this->slug,
+            'status' => $this->status,
+            'genre' => $this->genre,
             'cover' => $this->cover,
             'youtube_url' => $this->youtube_url,
             'released_year' => $this->released_year,
             'publisher' => $this->publisher,
-            'key' => explode(', ', $this->key),
             'bpm' => $this->bpm,
             'sections' => $this->when(
                 $this->relationLoaded('sections'),
                 SectionResource::collection($this->sections)
             ),
+            'keys' => $this->when(
+                $this->relationLoaded('keys'),
+                $this->keys->select('id', 'key', 'family_name', 'family')
+            ),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

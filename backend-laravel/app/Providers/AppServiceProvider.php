@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\AuthContext;
 use App\Services\AuthService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -15,7 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register AuthContext singleton
+        $this->app->singleton('auth.context', function ($app) {
+            return new AuthContext();
+        });
     }
 
     /**
