@@ -43,8 +43,7 @@ class AuthMiddleware
             throw new AuthException();
         }
 
-        $request->attributes->add(['user' => $validatedToken['decoded']]);
-
+        authContext()->setUser($validatedToken['decoded']);
         return $next($request);
     }
 }
