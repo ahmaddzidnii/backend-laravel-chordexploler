@@ -14,9 +14,14 @@ import {
   MdSkipPrevious,
 } from "react-icons/md";
 
+import { Pagination as PaginationType } from "@/features/chords/api/songs";
+import { IconType } from "react-icons/lib";
+import { cn } from "@/lib/utils";
+
 interface PaginationProps {
-  totalItems: number;
-  initialPage: number;
+  pagination?: PaginationType;
+  isPaginationLoading?: boolean;
+  hidden?: boolean;
   initialItemsPerPage: number;
   itemsPerPageOptions: number[];
   onPageChange: (newPage: number) => void;
@@ -24,22 +29,19 @@ interface PaginationProps {
 }
 
 const Pagination = ({
-  totalItems,
-  initialPage,
-  initialItemsPerPage,
+  pagination,
   itemsPerPageOptions,
+  isPaginationLoading,
+  hidden,
   onPageChange,
   onItemsPerPageChange,
 }: PaginationProps) => {
-  const [currentPage, setCurrentPage] = useState(initialPage ?? 1);
-  const [itemsPerPage, setItemsPerPage] = useState(
-    itemsPerPageOptions.includes(initialItemsPerPage) ? initialItemsPerPage : itemsPerPageOptions[0]
-  );
-
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const hasNextPage = currentPage < totalPages;
-  const hasPreviousPage = currentPage > 1;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(pagination?.items.per_page ?? 10);
+  const [currentPage, setCurrentPage] = useState(pagination?.current_page ?? 1);
+  const totalItems = pagination?.items.total!;
+  const totalPages = pagination?.last_visible_page!;
+  const hasNextPage = pagination?.has_next_page!;
+  const hasPreviousPage = pagination?.has_prev_page!;
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -48,21 +50,21 @@ const Pagination = ({
     }
   };
 
-  useEffect(() => {
-    if (initialPage!! > totalPages) {
-      setCurrentPage(totalPages);
-    } else if (initialPage!! < 1) {
-      setCurrentPage(1);
-    } else {
-      setCurrentPage(initialPage);
-    }
-  }, [initialPage]);
-
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     onItemsPerPageChange(value);
-    setCurrentPage(1); // Reset to the first page on items per page change
   };
+
+  useEffect(() => {
+    if (pagination) {
+      setItemsPerPage(pagination.items.per_page);
+      setCurrentPage(pagination.current_page);
+    }
+  }, [pagination]);
+
+  if (!pagination || isPaginationLoading || pagination.items.count === 0 || hidden) {
+    return null;
+  }
 
   return (
     <div className="mt-4 mx-auto flex h-12 items-center">
@@ -93,40 +95,61 @@ const Pagination = ({
       </div>
 
       {/* Navigation buttons */}
-      <div>
-        <MdSkipPrevious
-          className={`size-8 cursor-pointer mr-4 ${
-            currentPage === 1 ? "opacity-50 cursor-auto" : ""
-          }`}
-          onClick={() => hasPreviousPage && handlePageChange(1)}
-        />
-      </div>
-      <div>
-        <MdOutlineNavigateBefore
-          className={`size-8 cursor-pointer mr-4 ${
-            currentPage === 1 ? "opacity-50 cursor-auto" : ""
-          }`}
-          onClick={() => hasPreviousPage && handlePageChange(currentPage - 1)}
-        />
-      </div>
-      <div>
-        <MdOutlineNavigateNext
-          className={`size-8 cursor-pointer mr-4 ${
-            currentPage === totalPages ? "opacity-50 cursor-auto" : ""
-          }`}
-          onClick={() => hasNextPage && handlePageChange(currentPage + 1)}
-        />
-      </div>
-      <div>
-        <MdSkipNext
-          className={`size-8 cursor-pointer ${
-            currentPage === totalPages ? "opacity-50 cursor-auto" : ""
-          }`}
-          onClick={() => hasNextPage && handlePageChange(totalPages)}
-        />
-      </div>
+      <NavigationButton
+        icon={MdSkipPrevious}
+        onClick={() => handlePageChange(1)}
+        disabled={!hasPreviousPage}
+      />
+      <NavigationButton
+        icon={MdOutlineNavigateBefore}
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={!hasPreviousPage}
+      />
+
+      <NavigationButton
+        icon={MdOutlineNavigateNext}
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={!hasNextPage}
+      />
+
+      <NavigationButton
+        icon={MdSkipNext}
+        onClick={() => handlePageChange(totalPages)}
+        disabled={!hasNextPage}
+      />
     </div>
   );
 };
 
 export default Pagination;
+
+interface NavigationButtonProps {
+  icon: IconType;
+  onClick: () => void;
+  classname?: string;
+  disabled?: boolean;
+}
+
+const NavigationButton = ({ icon: Icon, onClick, classname, disabled }: NavigationButtonProps) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (!disabled && (event.key === "Enter" || event.key === " ")) {
+      onClick();
+    }
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      className={cn(
+        "flex items-center justify-center p-2 rounded-md focus:outline-none focus:ring-2",
+        disabled ? "opacity-50 cursor-default" : "cursor-pointer",
+        classname
+      )}
+      disabled={disabled}
+      aria-disabled={disabled}
+    >
+      <Icon className="size-8" />
+    </button>
+  );
+};

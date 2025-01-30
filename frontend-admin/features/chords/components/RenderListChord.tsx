@@ -115,14 +115,23 @@ const RenderListChord = () => {
     setSelectedItems(!isAllSelected ? songs!!.data.map((data) => String(data.id)) : []);
   };
 
-  const getActiveClass = (type: string) => (searchParams.get("type") == type ? "font-bold" : "");
+  const handleItemsPerPageChange = (value: number) => {
+    setIsAllSelected(false);
+    setSelectedItems([]);
+    window.history.pushState(null, "", pathname + "?" + createQueryString({ limit: value }));
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setIsAllSelected(false);
+    setSelectedItems([]);
+    window.history.pushState(null, "", pathname + "?" + createQueryString({ page: newPage }));
+  };
 
   return (
     <>
       <div className="sticky top-0 bg-white left-0">
         <div className="flex space-x-6 text-sm font-medium mt-[23px]">
           <Link
-            className={cn(getActiveClass("all"))}
             href={
               pathname +
               "?" +
@@ -327,32 +336,17 @@ const RenderListChord = () => {
         }}
       />
 
-      {!isLoadingSongs && !isFetchingSongs && !isErrorSongs && (
+      {
         <Pagination
+          pagination={songs?.pagination}
           initialItemsPerPage={Number(searchParams.get("limit") ?? 10)}
           itemsPerPageOptions={[10, 20, 30, 40, 50]}
-          totalItems={songs?.pagination.items.total!!}
-          initialPage={Number(searchParams.get("page") ?? 1)}
-          onItemsPerPageChange={(value) => {
-            setIsAllSelected(false);
-            setSelectedItems([]);
-            window.history.pushState(
-              null,
-              "",
-              pathname + "?" + createQueryString({ limit: value })
-            );
-          }}
-          onPageChange={(newPage) => {
-            setIsAllSelected(false);
-            setSelectedItems([]);
-            window.history.pushState(
-              null,
-              "",
-              pathname + "?" + createQueryString({ page: newPage })
-            );
-          }}
+          isPaginationLoading={isLoadingSongs || isFetchingSongs}
+          hidden={isErrorSongs}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
         />
-      )}
+      }
     </>
   );
 };
