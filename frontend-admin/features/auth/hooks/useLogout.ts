@@ -5,6 +5,8 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
+import { COOKIE_NAME_ACCESS_TOKEN } from "@/config/cookies";
+
 export function useLogout() {
   const router = useRouter();
   const [isLoadingLogout, setIsLoadingLogout] = useState(false);
@@ -16,7 +18,7 @@ export function useLogout() {
     axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
         headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
+          Authorization: `Bearer ${getCookie(COOKIE_NAME_ACCESS_TOKEN)}`,
         },
         withCredentials: true,
       })
