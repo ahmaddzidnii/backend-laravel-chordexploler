@@ -15,6 +15,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { usePathname } from "next/navigation";
+import { AuthUser } from "@/types";
 
 const sidebars = {
   MID_SECTION: [
@@ -35,20 +36,20 @@ const sidebars = {
   ],
 };
 
-const Sidebar = () => {
+const Sidebar = ({ user }: { user: AuthUser | null }) => {
   const pathname = usePathname();
   return (
     <>
-      <SidebarMobile />
+      <SidebarMobile user={user} />
       <div className="w-[255px] border-r  flex-col justify-between h-[calc(100vh-56px)] ml-4 hidden xl:flex">
         <div className="w-full h-[208px] flex items-center flex-col justify-center">
           <Avatar className="size-28">
-            <AvatarImage src="https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={user?.avatar} />
+            <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
           </Avatar>
           <div className="text-center mt-2">
             <span className="text-xl font-bold">Channel Anda</span>
-            <p className="text-sm">Madz Channel</p>
+            <p className="text-sm">{user?.name ?? "Placeholder"}</p>
           </div>
         </div>
         <ul className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-thin pr-3">
@@ -77,7 +78,7 @@ const Sidebar = () => {
   );
 };
 
-const SidebarMobile = () => {
+const SidebarMobile = ({ user }: { user: AuthUser | null }) => {
   const { isOpen, toggle, close } = useSidebarStore();
   const pathname = usePathname();
 
@@ -99,12 +100,12 @@ const SidebarMobile = () => {
         </VisuallyHidden>
         <div className="w-full h-[208px] flex items-center flex-col justify-center">
           <Avatar className="size-28">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={user?.avatar} />
+            <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
           </Avatar>
           <div className="text-center mt-2">
             <span className="text-xl font-bold">Channel Anda</span>
-            <p className="text-sm">Madz Channel</p>
+            <p className="text-sm">{user?.name ?? "Placeholder"}</p>
           </div>
         </div>
         <ul className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-thin pr-3">

@@ -9,8 +9,10 @@ import { Input } from "./ui/input";
 import { useRef } from "react";
 import { Button } from "./ui/button";
 import { useSidebarStore } from "@/store/useSidebarStore";
+import { AuthUser } from "@/types";
+import ProfileDropdown from "@/features/auth/components/ProfileDropdown";
 
-const Navbar = () => {
+const Navbar = ({ user }: { user: AuthUser | null }) => {
   const formSearchRef = useRef<HTMLFormElement>(null);
   const { toggle } = useSidebarStore();
 
@@ -85,10 +87,19 @@ const Navbar = () => {
             Tulis
           </Button>
         </div>
-        <Avatar className="size-9">
-          <AvatarImage src="https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <ProfileDropdown user={user}>
+          <button>
+            <Avatar className="size-9">
+              <AvatarImage
+                src={
+                  user?.avatar ??
+                  "https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg"
+                }
+              />
+              <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
+            </Avatar>
+          </button>
+        </ProfileDropdown>
       </div>
     </header>
   );
