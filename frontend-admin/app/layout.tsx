@@ -8,6 +8,7 @@ import { AuthContextProvider } from "@/features/auth/context/useAuthContext";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -28,15 +29,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
       <body className={cn(poppins.className)}>
         <TanstackProvider>
           <GoogleOAuthProvider clientId="941907082804-4j59igvjeps6fgagur3m47okvngr28lu.apps.googleusercontent.com">
-            <AuthContextProvider>
-              <Toaster />
-              <NextTopLoader />
-              <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
-            </AuthContextProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              disableTransitionOnChange
+            >
+              <AuthContextProvider>
+                <Toaster />
+                <NextTopLoader />
+                <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
+              </AuthContextProvider>
+            </ThemeProvider>
           </GoogleOAuthProvider>
         </TanstackProvider>
       </body>

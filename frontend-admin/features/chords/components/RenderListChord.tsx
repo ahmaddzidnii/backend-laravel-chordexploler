@@ -129,7 +129,7 @@ const RenderListChord = () => {
 
   return (
     <>
-      <div className="sticky top-0 bg-white left-0">
+      <div className="sticky top-0 bg-background left-0">
         <div className="flex space-x-6 text-sm font-medium mt-[23px]">
           <Link
             href={
@@ -168,7 +168,7 @@ const RenderListChord = () => {
                 duration: 0.3,
               },
             }}
-            className="bg-muted-foreground/80 text-background flex shadow-lg rounded-md overflow-hidden"
+            className="bg-muted  flex  rounded-md overflow-hidden"
           >
             <div className="border-e my-1">
               <p className="p-3">{selectedItems.length}&nbsp;selected</p>
@@ -251,7 +251,7 @@ const RenderListChord = () => {
           return (
             <div
               role="row"
-              className={cn("flex border-b items-center", isSelected && "bg-gray-100")}
+              className={cn("flex border-b items-center", isSelected && "bg-muted")}
               key={itemId}
             >
               <div

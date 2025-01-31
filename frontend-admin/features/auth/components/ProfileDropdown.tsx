@@ -1,6 +1,14 @@
 "use client";
 
-import { LogOut, Moon, MessageSquarePlus, ChevronRight, User, Youtube } from "lucide-react";
+import {
+  LogOut,
+  Moon,
+  MessageSquarePlus,
+  ChevronRight,
+  User,
+  Youtube,
+  SunIcon,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +20,9 @@ import {
 import { AuthUser } from "@/types";
 import { useLogout } from "../hooks/useLogout";
 import { useRouter } from "next/navigation";
-import { createElement } from "react";
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import React from "react";
 
 export default function ProfileDropdown({
   children,
@@ -22,45 +32,53 @@ export default function ProfileDropdown({
 }>) {
   const { logout } = useLogout();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const menus = [
     [
       {
         icon: User,
         title: "Channel Anda",
-        onClick: () => {
-          router.push("/dashboard");
-        },
+        isLink: true,
+        href: "/dashboard",
+        onClick: () => {},
       },
       {
         icon: Youtube,
         title: "ChordExploler",
-        onClick: () => {
-          const a = document.createElement("a");
-          a.href = "https://www.youtube.com/";
-          a.target = "_blank";
-          a.click();
-        },
+        isLink: true,
+        href: "https://www.youtube.com/",
+        onClick: () => {},
       },
       {
         icon: User,
         title: "Profile Settings",
+        isLink: true,
+        href: "/dashboard",
         onClick: () => {},
       },
       {
         icon: LogOut,
         title: "Logout",
+        isLink: false,
+        href: null,
         onClick: () => logout({}),
       },
     ],
     [
       {
-        icon: Moon,
-        title: "Tampilan: Gelap",
-        onClick: () => {},
+        icon: theme === "dark" ? Moon : SunIcon,
+        title: `Mode : ${theme === "dark" ? "Gelap" : "Terang"}`,
+        isLink: false,
+        href: null,
+        onClick: () => {
+          setTheme((theme) => (theme === "dark" ? "light" : "dark"));
+        },
       },
       {
         icon: MessageSquarePlus,
         title: "Kirim masukan",
+        isLink: false,
+        href: null,
         onClick: () => {},
       },
     ],
@@ -81,27 +99,56 @@ export default function ProfileDropdown({
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {menus[0].map((menu, index) => (
-            <DropdownMenuItem
-              key={index}
-              className="cursor-pointer"
-              onClick={menu.onClick}
-            >
-              <menu.icon className="mr-2 h-4 w-4" />
-              <span>{menu.title}</span>
-            </DropdownMenuItem>
-          ))}
+          {menus[0].map((menu, index) => {
+            return (
+              <DropdownMenuItem
+                key={index}
+                className="cursor-pointer py-2"
+                onClick={menu.isLink ? () => () => {} : menu.onClick}
+              >
+                {menu.isLink ? (
+                  <Link
+                    href={menu.href as string}
+                    className="flex items-center gap-2 w-full"
+                  >
+                    <menu.icon className="mr-2 h-4 w-4" />
+                    <span>{menu.title}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2 w-full">
+                    <menu.icon className="mr-2 h-4 w-4" />
+                    <span>{menu.title}</span>
+                  </div>
+                )}
+              </DropdownMenuItem>
+            );
+          })}
+
           <DropdownMenuSeparator />
-          {menus[1].map((menu, index) => (
-            <DropdownMenuItem
-              key={index}
-              className="cursor-pointer"
-              onClick={menu.onClick}
-            >
-              <menu.icon className="mr-2 h-4 w-4" />
-              <span>{menu.title}</span>
-            </DropdownMenuItem>
-          ))}
+          {menus[1].map((menu, index) => {
+            return (
+              <DropdownMenuItem
+                key={index}
+                className="cursor-pointer py-2"
+                onClick={menu.isLink ? () => () => {} : menu.onClick}
+              >
+                {menu.isLink ? (
+                  <Link
+                    href={menu.href as string}
+                    className="flex items-center gap-2 w-full"
+                  >
+                    <menu.icon className="mr-2 h-4 w-4" />
+                    <span>{menu.title}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2 w-full">
+                    <menu.icon className="mr-2 h-4 w-4" />
+                    <span>{menu.title}</span>
+                  </div>
+                )}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

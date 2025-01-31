@@ -38,6 +38,7 @@ const sidebars = {
 
 const Sidebar = ({ user }: { user: AuthUser | null }) => {
   const pathname = usePathname();
+
   return (
     <>
       <SidebarMobile user={user} />
