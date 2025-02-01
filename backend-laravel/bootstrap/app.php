@@ -53,39 +53,39 @@ return Application::configure(basePath: dirname(__DIR__))
                 })->errorResponse("Too many request, please slow down", 429);
             }
         });
-        $exceptions->render(function (\RuntimeException $e, Request $request) {
+        // $exceptions->render(function (\RuntimeException $e, Request $request) {
 
-            Log::debug($e->getMessage(), [
-                'context' => [
-                    'exception_class' => get_class($e),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
-                    'request_ip' => $request->ip(),
-                    'request_url' => $request->fullUrl(),
-                    'request_method' => $request->method(),
-                    'user_agent' => $request->userAgent()
-                ]
-            ]);
+        //     Log::debug($e->getMessage(), [
+        //         'context' => [
+        //             'exception_class' => get_class($e),
+        //             'file' => $e->getFile(),
+        //             'line' => $e->getLine(),
+        //             'trace' => $e->getTraceAsString(),
+        //             'request_ip' => $request->ip(),
+        //             'request_url' => $request->fullUrl(),
+        //             'request_method' => $request->method(),
+        //             'user_agent' => $request->userAgent()
+        //         ]
+        //     ]);
 
-            if ($request->is('api/*')) {
-                Log::error($e->getMessage(), [
-                    'context' => [
-                        'exception_class' => get_class($e),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
-                        'trace' => $e->getTraceAsString(),
-                        'request_ip' => $request->ip(),
-                        'request_url' => $request->fullUrl(),
-                        'request_method' => $request->method(),
-                        'user_agent' => $request->userAgent(),
-                    ]
-                ]);
-                return (new class {
-                    use ApiResponseHelper;
-                })->errorResponse('Internal Server Error', 500);
-            }
-        });
+        //     if ($request->is('api/*')) {
+        //         Log::error($e->getMessage(), [
+        //             'context' => [
+        //                 'exception_class' => get_class($e),
+        //                 'file' => $e->getFile(),
+        //                 'line' => $e->getLine(),
+        //                 'trace' => $e->getTraceAsString(),
+        //                 'request_ip' => $request->ip(),
+        //                 'request_url' => $request->fullUrl(),
+        //                 'request_method' => $request->method(),
+        //                 'user_agent' => $request->userAgent(),
+        //             ]
+        //         ]);
+        //         return (new class {
+        //             use ApiResponseHelper;
+        //         })->errorResponse('Internal Server Error', 500);
+        //     }
+        // });
 
         $exceptions->render(function (AuthException $e, Request $request) {
             if ($request->is('api/*')) {
@@ -103,23 +103,23 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (QueryException $e, Request $request) {
-            if ($request->is('api/*')) {
-                Log::debug($e->getMessage(), [
-                    'context' => [
-                        'exception_class' => get_class($e),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
-                        'trace' => $e->getTraceAsString(),
-                        'request_ip' => $request->ip(),
-                        'request_url' => $request->fullUrl(),
-                        'request_method' => $request->method(),
-                        'user_agent' => $request->userAgent()
-                    ]
-                ]);
-                return (new class {
-                    use ApiResponseHelper;
-                })->errorResponse("Internal Server Error", 500);
-            }
-        });
+        // $exceptions->render(function (QueryException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         Log::debug($e->getMessage(), [
+        //             'context' => [
+        //                 'exception_class' => get_class($e),
+        //                 'file' => $e->getFile(),
+        //                 'line' => $e->getLine(),
+        //                 'trace' => $e->getTraceAsString(),
+        //                 'request_ip' => $request->ip(),
+        //                 'request_url' => $request->fullUrl(),
+        //                 'request_method' => $request->method(),
+        //                 'user_agent' => $request->userAgent()
+        //             ]
+        //         ]);
+        //         return (new class {
+        //             use ApiResponseHelper;
+        //         })->errorResponse("Internal Server Error", 500);
+        //     }
+        // });
     })->create();

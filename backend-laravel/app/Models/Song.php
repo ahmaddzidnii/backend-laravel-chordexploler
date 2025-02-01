@@ -21,6 +21,7 @@ class Song extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'title',
         'artist',
         'slug',

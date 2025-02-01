@@ -5,11 +5,7 @@ use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Common\UserController;
 use App\Http\Controllers\Studio\SongController;
 use App\Http\Controllers\Studio\KeyController;
-use App\Models\Key;
-use App\Models\Song;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 // Route::post('/upload', function (Request $request) {
 //     $request->validate([
@@ -136,23 +132,8 @@ Route::group(['middleware' => 'throttle:api'], function () {
             // Songs
             Route::apiResource('/songs', SongController::class);
 
-            // Keys
-            Route::get('/keys', KeyController::class);
+            // Key options
+            Route::get('/get-key-options', [KeyController::class, 'getOptions']);
         });
-
-
-        // Example Resource Routes Structure
-        /*
-        // Posts Routes
-        Route::group([
-            'prefix' => 'posts',
-            'as' => 'posts.'
-        ], function () {
-            Route::apiResource('/', PostController::class);
-            
-            // Nested Resources
-            Route::apiResource('comments', CommentController::class);
-        });
-        */
     });
 });
