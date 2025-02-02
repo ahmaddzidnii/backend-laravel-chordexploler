@@ -7,46 +7,6 @@ use App\Http\Controllers\Studio\SongController;
 use App\Http\Controllers\Studio\KeyController;
 use Illuminate\Support\Facades\Route;
 
-// Route::post('/upload', function (Request $request) {
-//     $request->validate([
-//         'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-//     ]);
-
-//     // Dapatkan file dari request
-//     $file = $request->file('file');
-
-//     // Generate nama unik untuk file
-//     $fileName = uniqid("chxp") . '.' . $file->getClientOriginalExtension();
-
-
-//     // Unggah file ke S3
-//     $path = Storage::disk('s3')->putFileAs('images', $file, $fileName, ['visibility' => 'public']);
-
-//     if (!$path) {
-//         return response()->json([
-//             'error' => 'Failed to upload image.'
-//         ], 500);
-//     }
-
-//     // Dapatkan URL file yang diunggah
-//     $url = Storage::url($path);
-
-//     return response()->json([
-//         'success' => 'You have successfully upload image.',
-//         'url' => $url
-//     ]);
-// });
-
-// Route::get('/keys', function () {
-//     // $song = Song::with('keys')->get();
-
-//     $keys = Key::with('songs')->get();
-
-//     return response()->json([
-//         'data' => $keys
-//     ]);
-// });
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
