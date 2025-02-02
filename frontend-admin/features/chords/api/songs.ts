@@ -20,12 +20,16 @@ export interface Daum {
   title: string;
   artist: string[];
   slug: string;
+  status: string;
+  genre: string[];
   cover: string;
   youtube_url: string;
   released_year: number;
   publisher: string;
-  key: string[];
   bpm: number;
+  keys: any[];
+  created_at: string;
+  updated_at: string;
 }
 
 type Songs = {
@@ -42,4 +46,31 @@ export const getSongs = async (page: number, limit = 10) => {
     },
   });
   return response.data;
+};
+
+export const createSong = async (data: FormData) => {
+  // Using axios to send the data
+  const response = await axiosAuthenticatedInstance.post<{
+    data: {
+      id: string;
+      user_id: string;
+      title: string;
+      artist: string[];
+      slug: string;
+      status: string;
+      genre: string[];
+      cover: string;
+      youtube_url: string;
+      released_year: number;
+      publisher: string;
+      bpm: number;
+      created_at: string;
+      updated_at: string;
+    };
+  }>("/studio/songs", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
 };

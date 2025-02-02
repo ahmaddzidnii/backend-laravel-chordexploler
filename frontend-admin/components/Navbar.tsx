@@ -1,17 +1,17 @@
 "use client";
-import { PlusIcon } from "lucide-react";
+
+import { useRef } from "react";
 import { TiThMenu } from "react-icons/ti";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "./ui/input";
-import { useRef } from "react";
-import { Button } from "./ui/button";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { AuthUser } from "@/types";
 import ProfileDropdown from "@/features/auth/components/ProfileDropdown";
 import ApplicationLogo from "./Logo";
+import AddEntityDropdown from "./AddEntityDropdown";
 
 const Navbar = ({ user }: { user: AuthUser | null }) => {
   const formSearchRef = useRef<HTMLFormElement>(null);
@@ -49,13 +49,7 @@ const Navbar = ({ user }: { user: AuthUser | null }) => {
       <div className="flex items-center justify-end flex-1">
         <CiSearch className="size-6 mr-4 md:hidden" />
         <div className="mr-4">
-          <Button
-            variant="outline"
-            className="rounded-xl"
-          >
-            <PlusIcon className="mr-1" />
-            Add
-          </Button>
+          <AddEntityDropdown />
         </div>
         <ProfileDropdown user={user}>
           <button>
@@ -76,7 +70,7 @@ const Navbar = ({ user }: { user: AuthUser | null }) => {
 };
 
 const NavbarSpacer = () => {
-  return <div className="h-[1px] bg-secondary" />;
+  return <div className="h-[1px] bg-border" />;
 };
 
 export { Navbar, NavbarSpacer };

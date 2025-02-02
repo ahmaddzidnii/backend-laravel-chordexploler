@@ -12,10 +12,12 @@ import Pagination from "@/components/Pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getSongs } from "@/features/chords/api/songs";
 import { DataRenderer } from "@/components/DataRenderer";
+import { formatDateToDDMMYYYY, formatDateToRelative } from "@/utils/formatDate";
+import { useQueryString } from "@/hooks/useQueryString";
 
 const EmptyFallback = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-[400px] w-full">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-100px)] w-full">
       <img
         src="/img/vector-fallback.png"
         alt="empty"
@@ -27,7 +29,7 @@ const EmptyFallback = () => {
 
 const ErrorFallback = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-[400px] w-full">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-100px)] w-full">
       <img
         src="/img/vector-fallback.png"
         alt="error"
@@ -39,7 +41,7 @@ const ErrorFallback = () => {
 
 const LoadingFallback = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-[400px] w-full">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-100px)] w-full">
       <img
         src="/img/vector-fallback.png"
         alt="loading"
@@ -50,13 +52,14 @@ const LoadingFallback = () => {
 };
 
 const RenderListChord = () => {
-  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const { createQueryString } = useQueryString();
 
   const page = Math.max(Number(searchParams.get("page") ?? 1), 1);
   const limit = Math.min(Number(searchParams.get("limit") ?? 10), 50);
 
-  const queryClient = useQueryClient();
   const queryKey = ["songs", { page, limit }];
 
   const {
@@ -71,7 +74,6 @@ const RenderListChord = () => {
     placeholderData: keepPreviousData,
   });
 
-  // Prefetch the next page!
   useEffect(() => {
     if (!isPlaceholderData && songs?.pagination.has_next_page) {
       queryClient.prefetchQuery({
@@ -81,32 +83,27 @@ const RenderListChord = () => {
     }
   }, [songs?.pagination, isPlaceholderData, queryClient, page, limit]);
 
-  // State for managing selected items
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
-  /**
-   * Get a new searchParams string by merging the current searchParams with a provided key/value pair
-   */
-  const createQueryString = useCallback(
-    (updates: Record<string, string | number>) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      // Loop through each key-value pair in the updates object
-      Object.entries(updates).forEach(([key, value]) => {
-        params.set(key, String(value));
-      });
-
-      return params.toString();
-    },
-    [searchParams]
-  );
-
   // Handle individual item selection
   const handleItemSelect = (id: string) => {
-    setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
-    );
+    setSelectedItems((prev) => {
+      const newSelectedItems = prev.includes(id)
+        ? prev.filter((itemId) => itemId !== id)
+        : [...prev, id];
+
+      if (songs) {
+        // Check if all items are selected
+        const isAllSelected =
+          songs?.data?.length > 0 &&
+          songs.data.every((data) => newSelectedItems.includes(String(data.id)));
+
+        setIsAllSelected(isAllSelected);
+      }
+
+      return newSelectedItems; // Perbarui state dengan nilai terbaru
+    });
   };
 
   // Handle select all checkbox
@@ -251,7 +248,10 @@ const RenderListChord = () => {
           return (
             <div
               role="row"
-              className={cn("flex border-b items-center", isSelected && "bg-muted")}
+              className={cn(
+                "flex border-b items-center hover:bg-muted cursor-pointer",
+                isSelected && "bg-muted"
+              )}
               key={itemId}
             >
               <div
@@ -264,42 +264,49 @@ const RenderListChord = () => {
                   onCheckedChange={() => handleItemSelect(itemId)}
                 />
               </div>
-              {/* Mobile */}
-              <div
-                role="cell"
-                className="w-full px-4 py-3 flex items-center lg:hidden"
+              {/* Wrapper Link dengan pointer-events-none */}
+              <Link
+                href={`/chords/${itemId}/edit`}
+                className="flex-1 pointer-events-none"
               >
-                <img
-                  src="https://chordexploler.is3.cloudhost.id/chordexploler/images/chexp6794e19d93e57.jpg"
-                  alt="song"
-                  className="aspect-square size-14 rounded-md mr-4"
-                />
-                <div className="flex-1 justify-start">
-                  <p className="line-clamp-1">
+                {/* Mobile View */}
+                <div
+                  role="cell"
+                  className="w-full px-4 py-3 flex items-center lg:hidden pointer-events-auto"
+                >
+                  <img
+                    src={item.cover}
+                    alt="song"
+                    className="aspect-square size-14 rounded-md mr-4"
+                  />
+                  <div className="flex-1 justify-start">
+                    <p className="line-clamp-1">
+                      {item.artist.join(" ,")} - {item.title}
+                    </p>
+                    <p className="line-clamp-1 text-sm">
+                      12 views . <span>{formatDateToRelative(item.created_at)}</span>
+                    </p>
+                    <p className="line-clamp-1 text-xs font-bold">C Mayor</p>
+                  </div>
+                </div>
+
+                {/* Desktop View */}
+                <div
+                  role="cell"
+                  className="hidden lg:flex w-[500px] min-w-[400px] overflow-hidden px-4 py-3 text-start items-center pointer-events-auto"
+                >
+                  <img
+                    src={item.cover}
+                    alt="song"
+                    className="aspect-square size-14 rounded-md mr-4"
+                  />
+                  <p className="hidden lg:block">
                     {item.artist.join(" ,")} - {item.title}
                   </p>
-                  <p className="line-clamp-1 text-sm">
-                    12 views . <span>1 week ago</span>
-                  </p>
-                  <p className="line-clamp-1 text-xs font-bold">C Mayor</p>
                 </div>
-              </div>
-              {/* Mobile */}
+              </Link>
 
-              {/* Dekstop */}
-              <div
-                role="cell"
-                className="hidden lg:flex w-[500px] min-w-[400px] overflow-hidden px-4 py-3 text-start items-center"
-              >
-                <img
-                  src="https://chordexploler.is3.cloudhost.id/chordexploler/images/chexp6794e19d93e57.jpg"
-                  alt="song"
-                  className="aspect-square size-14 rounded-md mr-4"
-                />
-                <p className="hidden lg:block">
-                  {item.artist.join(" ,")} - {item.title}
-                </p>
-              </div>
+              {/* Kolom Data Lainnya */}
               <div
                 role="cell"
                 className="flex-1 px-4 py-3 text-center hidden lg:block"
@@ -316,7 +323,7 @@ const RenderListChord = () => {
                 role="cell"
                 className="flex-1 px-4 py-3 text-center hidden lg:block"
               >
-                26 Mei 202
+                {formatDateToDDMMYYYY(item.created_at)}
               </div>
               <div
                 role="cell"
@@ -330,22 +337,24 @@ const RenderListChord = () => {
               >
                 0
               </div>
-              {/* Dekstop */}
             </div>
           );
         }}
       />
 
       {
-        <Pagination
-          pagination={songs?.pagination}
-          initialItemsPerPage={Number(searchParams.get("limit") ?? 10)}
-          itemsPerPageOptions={[10, 20, 30, 40, 50]}
-          isPaginationLoading={isLoadingSongs || isFetchingSongs}
-          hidden={isErrorSongs}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
+        <div className="w-full border-b flex justify-end ">
+          <Pagination
+            className="my-4"
+            pagination={songs?.pagination}
+            initialItemsPerPage={Number(searchParams.get("limit") ?? 10)}
+            itemsPerPageOptions={[10, 20, 30, 40, 50]}
+            isPaginationLoading={isLoadingSongs || isFetchingSongs}
+            hidden={isErrorSongs}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
       }
     </>
   );

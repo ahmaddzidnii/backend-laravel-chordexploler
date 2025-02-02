@@ -9,6 +9,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import ModalProvider from "@/providers/ModalProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -44,6 +45,7 @@ export default function RootLayout({
               <AuthContextProvider>
                 <Toaster />
                 <NextTopLoader />
+                <ModalProvider />
                 <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
               </AuthContextProvider>
             </ThemeProvider>

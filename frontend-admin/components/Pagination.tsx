@@ -22,6 +22,7 @@ interface PaginationProps {
   pagination?: PaginationType;
   isPaginationLoading?: boolean;
   hidden?: boolean;
+  className?: string;
   initialItemsPerPage: number;
   itemsPerPageOptions: number[];
   onPageChange: (newPage: number) => void;
@@ -33,6 +34,7 @@ const Pagination = ({
   itemsPerPageOptions,
   isPaginationLoading,
   hidden,
+  className,
   onPageChange,
   onItemsPerPageChange,
 }: PaginationProps) => {
@@ -67,7 +69,7 @@ const Pagination = ({
   }
 
   return (
-    <div className="mt-4 mx-auto flex h-12 items-center">
+    <div className={cn(" flex h-12 items-center", className)}>
       {/* Items per page dropdown */}
       <div className="text-xs md:text-sm font-semibold hidden md:block">
         Per page:&nbsp;
