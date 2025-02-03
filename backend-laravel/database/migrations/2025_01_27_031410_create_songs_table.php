@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('songs', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('title');
             $table->string('title_lower');
             $table->string('artist');
@@ -26,12 +26,11 @@ return new class extends Migration
             $table->string('bpm')->nullable();
             $table->timestamps();
 
-            $table->uuid('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignUlid('user_id')->nullable()->constrained('users', "id")->onDelete('cascade');
         });
 
         Schema::create('sections', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('name');
             $table->integer('start_time');
             $table->integer('end_time');
@@ -39,7 +38,7 @@ return new class extends Migration
             $table->text('content');
             $table->timestamps();
 
-            $table->foreignUuid('song_id')->constrained('songs', "id")->onDelete('cascade');
+            $table->foreignUlid('song_id')->constrained('songs', "id")->onDelete('cascade');
         });
     }
 

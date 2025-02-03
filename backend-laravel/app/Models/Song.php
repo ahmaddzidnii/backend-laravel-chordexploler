@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Song extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
-    protected $keyType = 'string';
-    public $incrementing = false;
+
 
     /**
      * The attributes that are mass assignable.
@@ -39,11 +39,11 @@ class Song extends Model
     {
         parent::boot();
 
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
+        // static::creating(function ($model) {
+        //     if (empty($model->id)) {
+        //         $model->id = (string) Str::uuid();
+        //     }
+        // });
     }
 
     public function setTitleAttribute($value)
@@ -72,6 +72,6 @@ class Song extends Model
 
     public function keys()
     {
-        return $this->belongsToMany(Key::class, 'songs_keys');
+        return $this->belongsToMany(Key::class, 'songs_keys')->using(SongKey::class);
     }
 }

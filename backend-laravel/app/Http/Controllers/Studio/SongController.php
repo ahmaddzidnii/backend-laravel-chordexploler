@@ -110,14 +110,7 @@ class SongController extends Controller
                 throw ValidationException::withMessages(['key' => 'One or more key IDs are invalid.']);
             }
 
-
-            $pivotData = [];
-
-            foreach ($keys as $keyId) {
-                $pivotData[$keyId] = ['id' => Str::uuid()];
-            }
-
-            $song->keys()->attach($pivotData);
+            $song->keys()->attach($keys);
 
             // Handle image upload
             $file = $validated['cover'];
@@ -156,7 +149,7 @@ class SongController extends Controller
 
         $userId = authContext()->getAuthUser()->sub;
 
-        $song = Song::where('id', $id)->where('id', $id)->with('sections')->first();
+        $song = Song::where('id', $id)->where('id', $id)->with(['sections', 'keys'])->first();
 
         if (!$song) {
             return $this->errorResponse('Song not found.', 404);

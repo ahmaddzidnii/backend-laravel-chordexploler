@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->text('user_agent')->nullable();
             $table->text('ip')->nullable();
             $table->text('refresh_token')->nullable()->unique();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreignUuid('user_id')->constrained('users', "id")->onDelete('cascade');
+            $table->foreignUlid('user_id')->constrained('users', "id")->onDelete('cascade');
         });
     }
 

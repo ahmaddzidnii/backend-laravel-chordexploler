@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Account extends Model
 {
-    protected $keyType = 'string';
-    public $incrementing = false;
+
+    use HasUlids;
 
     /**
      * The attributes that are mass assignable.
@@ -28,11 +28,6 @@ class Account extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
     }
 
     public function user(): BelongsTo

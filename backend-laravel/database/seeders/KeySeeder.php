@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Key;
+use Illuminate\Database\Seeder;
 
 class KeySeeder extends Seeder
 {

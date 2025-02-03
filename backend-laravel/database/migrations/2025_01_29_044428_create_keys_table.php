@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('keys', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('key');
             $table->string('family_name');
             $table->string('family');
@@ -20,9 +20,9 @@ return new class extends Migration
         });
 
         Schema::create('songs_keys', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('song_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('key_id')->constrained()->onDelete('cascade');
+            $table->ulid('id')->primary();
+            $table->foreignulid('song_id')->constrained()->onDelete('cascade');
+            $table->foreignulid('key_id')->constrained()->onDelete('cascade');
         });
     }
 
