@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -11,9 +11,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import ModalProvider from "@/providers/ModalProvider";
 
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
+const roboto = Roboto({
+  weight: ["100", "300", "400", "500", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +33,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body className={cn(poppins.className)}>
+      <body className={cn(roboto.className)}>
         <TanstackProvider>
           <GoogleOAuthProvider clientId="941907082804-4j59igvjeps6fgagur3m47okvngr28lu.apps.googleusercontent.com">
             <ThemeProvider

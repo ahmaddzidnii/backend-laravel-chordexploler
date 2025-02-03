@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { IoFilter } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -14,6 +14,9 @@ import { getSongs } from "@/features/chords/api/songs";
 import { DataRenderer } from "@/components/DataRenderer";
 import { formatDateToDDMMYYYY, formatDateToRelative } from "@/utils/formatDate";
 import { useQueryString } from "@/hooks/useQueryString";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/hooks/useConfirm";
+import { useRemoveSong } from "../hooks/useRemoveSong";
 
 const EmptyFallback = () => {
   return (
@@ -56,6 +59,12 @@ const RenderListChord = () => {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const { createQueryString } = useQueryString();
+  const [DialogConfirm, confirm] = useConfirm(
+    "Delete Confirmation",
+    "Are you sure you want to delete this item?"
+  );
+
+  const removeSongMutation = useRemoveSong();
 
   const page = Math.max(Number(searchParams.get("page") ?? 1), 1);
   const limit = Math.min(Number(searchParams.get("limit") ?? 10), 50);
@@ -124,9 +133,21 @@ const RenderListChord = () => {
     window.history.pushState(null, "", pathname + "?" + createQueryString({ page: newPage }));
   };
 
+  const handleDelete = async () => {
+    const ok = await confirm();
+    if (!ok) return;
+    removeSongMutation.mutate(selectedItems, {
+      onSuccess: () => {
+        setSelectedItems([]);
+        setIsAllSelected(false);
+      },
+    });
+  };
+
   return (
     <>
-      <div className="sticky top-0 bg-background left-0">
+      <DialogConfirm />
+      <div className="sticky top-0 z-50 bg-background left-0">
         <div className="flex space-x-6 text-sm font-medium mt-[23px]">
           <Link
             href={
@@ -150,38 +171,41 @@ const RenderListChord = () => {
           </button>
         </div>
 
-        {selectedItems.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            layout
-            transition={{
-              layout: {
-                duration: 0.5,
-                ease: "easeInOut",
-              },
-              opacity: {
-                duration: 0.3,
-              },
-            }}
-            className="bg-muted  flex  rounded-md overflow-hidden"
-          >
-            <div className="border-e my-1">
-              <p className="p-3">{selectedItems.length}&nbsp;selected</p>
-            </div>
-
-            <button
-              onClick={() => {
-                setIsAllSelected(false);
-                setSelectedItems([]);
-              }}
-              className="p-4 ms-auto"
+        <AnimatePresence>
+          {selectedItems.length > 0 && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-foreground text-background"
             >
-              <IoMdClose className="size-6" />
-            </button>
-          </motion.div>
-        )}
+              <div className="gap-2 flex items-center">
+                <div className="border-e">
+                  <p className="p-3">{selectedItems.length} selected</p>
+                </div>
+
+                <Button
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={removeSongMutation.isPending}
+                >
+                  Delete ({selectedItems.length} Song)
+                </Button>
+
+                <button
+                  onClick={() => {
+                    setIsAllSelected(false);
+                    setSelectedItems([]);
+                  }}
+                  disabled={removeSongMutation.isPending}
+                  className="p-4 ms-auto"
+                >
+                  <IoMdClose className="size-6" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div
           role="rowheader"
@@ -192,6 +216,7 @@ const RenderListChord = () => {
             className="w-[50px] px-4 py-3 text-center"
           >
             <Checkbox
+              disabled={removeSongMutation.isPending || !songs?.data?.length}
               id="check-all"
               checked={isAllSelected}
               onCheckedChange={handleSelectAll}
@@ -261,10 +286,11 @@ const RenderListChord = () => {
                 <Checkbox
                   id={itemId}
                   checked={isSelected}
+                  disabled={removeSongMutation.isPending}
                   onCheckedChange={() => handleItemSelect(itemId)}
                 />
               </div>
-              {/* Wrapper Link dengan pointer-events-none */}
+
               <Link
                 href={`/chords/${itemId}/edit`}
                 className="flex-1 pointer-events-none"

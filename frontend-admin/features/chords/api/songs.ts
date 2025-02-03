@@ -74,3 +74,12 @@ export const createSong = async (data: FormData) => {
   });
   return response.data.data;
 };
+
+export const removeSong = async (ids: string[]) => {
+  const response = await axiosAuthenticatedInstance.delete(`/studio/songs`, {
+    data: {
+      ids,
+    },
+  });
+  return response.data;
+};

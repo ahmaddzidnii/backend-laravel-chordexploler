@@ -9,10 +9,11 @@ use App\Http\Requests\SongUpdateRequest;
 use App\Http\Resources\Studio\SongResource;
 use App\Models\Song;
 use App\Traits\ApiResponseHelper;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\ValidationException;
 
 class SongController extends Controller
 {
@@ -49,7 +50,7 @@ class SongController extends Controller
 
         $userId = authContext()->getAuthUser()->sub;
 
-        $songs = Song::without('sections')->with('keys')->where('user_id', $userId)->paginate($limit);
+        $songs = Song::without('sections')->with('keys')->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate($limit);
 
         return $this->successResponse(SongResource::collection($songs->items()), pagination: $this->getPaginationData($songs));
     }
@@ -106,7 +107,7 @@ class SongController extends Controller
 
             if (count($existingKeys) !== count($keys)) {
                 DB::rollBack();
-                return $this->errorResponse('One or more key IDs are invalid.', 400);
+                throw ValidationException::withMessages(['key' => 'One or more key IDs are invalid.']);
             }
 
 
@@ -227,7 +228,7 @@ class SongController extends Controller
 
                     if (count($existingKeys) !== count($keys)) {
                         DB::rollBack();
-                        return $this->errorResponse('One or more key IDs are invalid.', 400);
+                        throw ValidationException::withMessages(['key' => 'One or more key IDs are invalid.']);
                     }
 
                     // Prepare pivot data with verified keys only
@@ -276,35 +277,41 @@ class SongController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function massDestory(Request $request)
     {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+        ]);
+
         $userId = authContext()->getAuthUser()->sub;
 
-        $song = Song::where('id', $id)->where('user_id', $userId)->first();
+        $songs = Song::where('user_id', $userId)->whereIn('id', $validated['ids'])->get();
 
-        if (!$song) {
-            return $this->errorResponse('Song not found.', 404);
+        if (count($songs) !== count($validated['ids'])) {
+            throw ValidationException::withMessages(['ids' => 'One or more song IDs are invalid.']);
         }
 
         try {
             DB::beginTransaction();
-            // Hapus gambar cover jika ada
-            if ($song->cover) {
-                $coverPath = 'images/songs/cover/' . basename($song->cover);
-                Storage::disk('s3')->delete($coverPath);
+            foreach ($songs as $song) {
+                // Hapus gambar cover jika ada
+                if ($song->cover) {
+                    $coverPath = 'images/songs/cover/' . basename($song->cover);
+                    Storage::disk('s3')->delete($coverPath);
+                }
+
+                // Hapus key
+                $song->keys()->detach();
+
+                // Hapus lagu
+                $song->delete();
             }
-
-            //  Hapus key
-            $song->keys()->detach();
-
-            $song->delete();
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
 
-        return $this->successResponse(new SongResource($song), 200);
+        return $this->successResponse("OK", 200);
     }
 }

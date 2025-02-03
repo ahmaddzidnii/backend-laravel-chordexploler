@@ -88,9 +88,13 @@ Route::group(['middleware' => 'throttle:api'], function () {
         });
 
         // Studio Features
-        Route::group(['prefix' => 'studio', 'as' => 'studio.'], function () {
+        Route::group(['prefix' => 'studio'], function () {
             // Songs
-            Route::apiResource('/songs', SongController::class);
+            Route::get('/songs', [SongController::class, 'index']);
+            Route::get('/songs/{id}', [SongController::class, 'show']);
+            Route::post('/songs', [SongController::class, 'store']);
+            Route::patch('/songs/{id}', [SongController::class, 'update']);
+            Route::delete('/songs', [SongController::class, 'massDestory']);
 
             // Key options
             Route::get('/get-key-options', [KeyController::class, 'getOptions']);

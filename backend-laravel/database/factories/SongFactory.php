@@ -22,13 +22,13 @@ class SongFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => null,
+            'user_id' => "228d067d-a570-4d33-b138-bacc27472b93",
             'title' => $this->faker->sentence(3),
             'artist' => implode(', ', array_map(function () {
                 return $this->faker->name;
             }, range(1, $this->faker->numberBetween(1, 3)))),
             'slug' => Str::slug($this->faker->sentence(3)),
-            'cover' => "https://is3.cloudhost.id/chordexploler/chordexploler/images/chexp6794e19d93e57.jpg",
+            'cover' => "https://lh3.googleusercontent.com/lkr1V6gP9v3t91jOx1WwAHJW4uBiQo_3VOMyTPF8hQV_-WCrO8Tdhshs05340bzrhZ2nIuotoiVz1ISOXA",
             'youtube_url' => "https://youtu.be/ZeFpigRaXbI?si=j-sC3yNkCRK_0qzE",
             'released_year' => $this->faker->year(),
             'publisher' => $this->faker->company(),
