@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { useGetKeyOptions } from "../hooks/useGetKeyOptions";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -19,7 +21,7 @@ export const formCreateSongSchema = z.object({
   title: z.string().nonempty("Title is required"),
   artist: z.string().nonempty("Artist name is required"),
   status: z.enum(["draft", "published"]),
-  key: z.string().nonempty("Key is required"),
+  key: z.array(z.string()).nonempty("Key is required"),
   cover: z.instanceof(File, { message: "File required" }).refine(
     (file) => {
       if (!file) return false;
@@ -47,6 +49,7 @@ interface CreateSongFormProps {
 
 const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
   const [selectedImageURL, setSelectedImageURL] = useState<string | null>(null);
+  const keyOptions = useGetKeyOptions();
 
   const form = useForm<z.infer<typeof formCreateSongSchema>>({
     resolver: zodResolver(formCreateSongSchema),
@@ -54,7 +57,7 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
       title: "",
       artist: "",
       status: "draft",
-      key: "",
+      key: [],
       cover: undefined,
       youtube_url: "",
       genre: "",
@@ -66,6 +69,10 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
 
   function onSubmit(values: z.infer<typeof formCreateSongSchema>) {
     onFormSubmit && onFormSubmit(values);
+  }
+
+  if (keyOptions.isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -114,20 +121,39 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
         />
 
         {/* Key */}
-
         <FormField
           control={form.control}
           name="key"
-          render={({ field }) => (
+          render={({ field: { onChange, ...rest } }) => (
             <FormItem>
-              <FormLabel>Key</FormLabel>
+              <FormLabel>Song Key</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter Key"
-                  {...field}
+                <MultiSelect
+                  {...rest}
+                  options={
+                    keyOptions.data
+                      ? keyOptions.data.data.map((key) => {
+                          return {
+                            label: key.key,
+                            value: key.id,
+                          };
+                        })
+                      : [
+                          {
+                            label: "C",
+                            value: "C",
+                          },
+                        ]
+                  }
+                  onValueChange={(selectedFrameworks) => onChange(selectedFrameworks)}
+                  placeholder="Select key"
+                  variant="inverted"
+                  animation={0}
+                  maxCount={5}
+                  modalPopover
                 />
               </FormControl>
-              <FormDescription>Provide the key's name.</FormDescription>
+              <FormDescription>Provide the song key.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

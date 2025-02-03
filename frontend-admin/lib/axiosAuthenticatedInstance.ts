@@ -5,7 +5,7 @@ import { COOKIE_NAME_ACCESS_TOKEN, COOKIE_NAME_REFRESH_TOKEN } from "@/config/co
 export const axiosAuthenticatedInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 1000 * 10 * 3, // 30 seconds
 });
 
 // Function to refresh token

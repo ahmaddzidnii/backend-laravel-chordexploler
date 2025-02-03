@@ -83,3 +83,23 @@ export const removeSong = async (ids: string[]) => {
   });
   return response.data;
 };
+
+export const getKeyOptions = async () => {
+  const response = await axiosAuthenticatedInstance.get<{
+    code: number;
+    data: {
+      id: string;
+      key: string;
+      family: string[];
+    }[];
+  }>("/studio/get-key-options");
+  return response.data;
+};
+
+export const getSongByIds = async (id: string) => {
+  const response = await axiosAuthenticatedInstance.get<{
+    code: number;
+    data: Daum;
+  }>(`/studio/songs/${id}`);
+  return response.data;
+};

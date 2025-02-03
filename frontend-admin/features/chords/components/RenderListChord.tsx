@@ -17,6 +17,7 @@ import { useQueryString } from "@/hooks/useQueryString";
 import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useRemoveSong } from "../hooks/useRemoveSong";
+import { Loader2Icon } from "lucide-react";
 
 const EmptyFallback = () => {
   return (
@@ -179,30 +180,39 @@ const RenderListChord = () => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-foreground text-background"
             >
-              <div className="gap-2 flex items-center">
-                <div className="border-e">
-                  <p className="p-3">{selectedItems.length} selected</p>
+              {removeSongMutation.isPending ? (
+                <div className="h-14 flex items-center">
+                  <div className="px-4">
+                    <Loader2Icon className="size-7 animate-spin " />
+                  </div>
+                  Deleting song please wait...
                 </div>
+              ) : (
+                <div className="gap-2 flex items-center">
+                  <div className="border-e">
+                    <p className="p-3">{selectedItems.length} selected</p>
+                  </div>
 
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                  disabled={removeSongMutation.isPending}
-                >
-                  Delete ({selectedItems.length} Song)
-                </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDelete}
+                    disabled={removeSongMutation.isPending}
+                  >
+                    Delete ({selectedItems.length} Song)
+                  </Button>
 
-                <button
-                  onClick={() => {
-                    setIsAllSelected(false);
-                    setSelectedItems([]);
-                  }}
-                  disabled={removeSongMutation.isPending}
-                  className="p-4 ms-auto"
-                >
-                  <IoMdClose className="size-6" />
-                </button>
-              </div>
+                  <button
+                    onClick={() => {
+                      setIsAllSelected(false);
+                      setSelectedItems([]);
+                    }}
+                    disabled={removeSongMutation.isPending}
+                    className="p-4 ms-auto"
+                  >
+                    <IoMdClose className="size-6" />
+                  </button>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

@@ -12,7 +12,7 @@ class SongSeeder extends Seeder
      */
     public function run(): void
     {
-        $songs = Song::factory()->count(100)->create();
+        $songs = Song::factory()->count(1000)->create();
 
         $songs->each(function (Song $song) {
             $song->sections()->create([

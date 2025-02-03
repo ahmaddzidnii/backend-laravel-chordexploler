@@ -36,7 +36,7 @@ export const useConfirm = (
 
   const ConfirmDialog = () => (
     <Dialog open={promise !== null}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-full md:w-[500px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>

@@ -14,6 +14,8 @@ export const useCreateSong = () => {
         const typedKey = key as keyof typeof values;
         if (key === "cover" && values[typedKey]) {
           formData.append("cover", values[typedKey] as File); // For file upload
+        } else if (key === "key") {
+          formData.append(key, JSON.stringify(values[typedKey]));
         } else {
           formData.append(key, values[typedKey].toString());
         }
