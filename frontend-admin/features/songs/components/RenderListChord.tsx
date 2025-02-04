@@ -10,7 +10,7 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { cn } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getSongs } from "@/features/chords/api/songs";
+import { getSongs } from "@/features/songs/api/songs";
 import { DataRenderer } from "@/components/DataRenderer";
 import { formatDateToDDMMYYYY, formatDateToRelative } from "@/utils/formatDate";
 import { useQueryString } from "@/hooks/useQueryString";
@@ -302,7 +302,7 @@ const RenderListChord = () => {
               </div>
 
               <Link
-                href={`/chords/${itemId}/edit`}
+                href={`/songs/${itemId}`}
                 className="flex-1 pointer-events-none"
               >
                 {/* Mobile View */}

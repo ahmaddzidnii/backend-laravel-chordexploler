@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { TbVideoPlus } from "react-icons/tb";
-import { useAddChordModal } from "@/features/chords/modals/AddChordsModal";
+import { useAddChordModal } from "@/features/songs/modals/AddChordsModal";
 
 const AddEntityDropdown = () => {
   const { open } = useAddChordModal();

@@ -1,4 +1,4 @@
-import RenderListChord from "@/features/chords/components/RenderListChord";
+import RenderListChord from "@/features/songs/components/RenderListChord";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -15,7 +15,7 @@ export default function ChordsPage() {
           className="text-[25px] pt-[23px] w-max font-bold"
           role="heading"
         >
-          My Chord Vault
+          My Songs
         </p>
       </header>
       <Suspense>

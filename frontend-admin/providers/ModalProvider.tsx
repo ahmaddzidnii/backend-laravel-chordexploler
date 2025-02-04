@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AddChordsModal from "@/features/chords/modals/AddChordsModal";
+import AddChordsModal from "@/features/songs/modals/AddChordsModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);

@@ -21,10 +21,10 @@ const sidebars = {
   MID_SECTION: [
     { title: "Dashboard", icon: MdDashboard, href: "/dashboard", rootName: "dashboard" },
     {
-      title: "Chords",
+      title: "Songs",
       icon: RiMusicAiLine,
-      href: "/chords?type=all&page=1&limit=50",
-      rootName: "chords",
+      href: "/songs?type=all&page=1&limit=50",
+      rootName: "songs",
     },
     { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics", rootName: "analytics" },
     { title: "Comments", icon: FaComment, href: "/comments", rootName: "comments" },
