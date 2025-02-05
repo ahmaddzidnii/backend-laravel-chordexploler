@@ -14,6 +14,13 @@ export interface Items {
   total: number;
 }
 
+export interface Key {
+  id: string;
+  key: string;
+  family_name: string;
+  family: string;
+}
+
 export interface Daum {
   id: string;
   user_id: string;
@@ -27,7 +34,7 @@ export interface Daum {
   released_year: number;
   publisher: string;
   bpm: number;
-  keys: any[];
+  keys: Key[];
   created_at: string;
   updated_at: string;
 }
@@ -96,10 +103,10 @@ export const getKeyOptions = async () => {
   return response.data;
 };
 
-export const getSongByIds = async (id: string) => {
+export const getSongById = async (id: string) => {
   const response = await axiosAuthenticatedInstance.get<{
     code: number;
     data: Daum;
-  }>(`/studio/songs/${id}`);
+  }>(`/studio/songs/${id}`, {});
   return response.data;
 };

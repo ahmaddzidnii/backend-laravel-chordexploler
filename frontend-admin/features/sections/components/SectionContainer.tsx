@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { SectionItem } from "./SectionItem";
 import { cn } from "@/lib/utils";
+import { DataRenderer } from "@/components/DataRenderer";
 
 interface SectionContainerProps {
   data: any[];
@@ -60,13 +61,19 @@ export const SectionContainer = ({ data }: SectionContainerProps) => {
             ref={provided.innerRef}
             className={cn("flex flex-col", data.length > 0 ? "mt-4" : "mt-0")}
           >
-            {orderedData.map((section, index) => (
-              <SectionItem
-                key={section.id}
-                data={section}
-                index={index}
-              />
-            ))}
+            <DataRenderer
+              fallback="No sections"
+              data={orderedData}
+              render={(section, index) => {
+                return (
+                  <SectionItem
+                    key={section?.id}
+                    data={section}
+                    index={index}
+                  />
+                );
+              }}
+            />
             {provided.placeholder}
           </ol>
         )}

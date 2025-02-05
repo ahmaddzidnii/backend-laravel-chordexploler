@@ -11,13 +11,15 @@ const ClientProvider = ({ children }: PropsWithChildren) => {
 
   if (!isMounted) return null;
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
+    // <motion.div
+    //   initial={{ opacity: 0 }}
+    //   animate={{ opacity: 1 }}
+    //   transition={{ duration: 0.5, ease: "easeOut" }}
+    // >
+    //   {children}
+    // </motion.div>
+
+    <>{children}</>
   );
 };
 export default ClientProvider;
