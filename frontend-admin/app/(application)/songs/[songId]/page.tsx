@@ -1,8 +1,8 @@
-import { SectionRender } from "@/features/sections/components/pages/SectionRender";
 import { Metadata } from "next";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { SongInfo } from "./SongInfo";
+import { SectionView } from "@/features/sections/view/SectionView";
 
 export const metadata: Metadata = {
   title: "Song Details",
@@ -22,7 +22,7 @@ const SongIdPage = () => {
         </Link>
       </header>
       <SongInfo />
-      <SectionRender />
+      <SectionView />
     </div>
   );
 };

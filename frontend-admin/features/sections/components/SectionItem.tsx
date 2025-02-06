@@ -1,6 +1,7 @@
 import { Clock } from "lucide-react";
 import { Draggable } from "@hello-pangea/dnd";
 import { formatSecondsToReadableTime } from "@/utils/formatTime";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface SectionItemProps {
   data: any;
@@ -19,7 +20,10 @@ export const SectionItem = ({ data, index }: SectionItemProps) => {
           className="p-4 rounded-lg border bg-background mb-4 cursor-default"
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold">{data.name}</h3>
+            <div className="flex gap-2 items-center">
+              <Checkbox id={data.name} />
+              <h3 className="font-semibold">{data.name}</h3>
+            </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               <span>

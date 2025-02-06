@@ -9,20 +9,15 @@ import { useSectionFormStore } from "./store/useSectionForm";
 
 const SectionForm = () => {
   const { disableEditing, isEditing } = useSectionFormStore();
-  const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [isEditing]);
 
   return (
     <form
-      ref={formRef}
       onSubmit={(e) => e.preventDefault()}
       className="border flex flex-col p-4 space-y-4 rounded-md"
     >
       <Input
         placeholder="Section Name"
-        // autoFocus
+        autoFocus
       />
       <div className="flex gap-2 flex-col md:flex-row">
         <Input placeholder="Start Time" />

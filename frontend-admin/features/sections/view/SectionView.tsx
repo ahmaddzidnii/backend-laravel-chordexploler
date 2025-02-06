@@ -1,8 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { SectionContainer } from "../SectionContainer";
-import SectionForm from "../SectionForm";
-import { useSectionFormStore } from "../store/useSectionForm";
+import { useSectionFormStore } from "../components/store/useSectionForm";
+import { SectionContainer } from "../components/SectionContainer";
+import SectionForm from "../components/SectionForm";
+
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const data = [
   {
@@ -34,9 +45,8 @@ const data = [
 <p class="row">Sesali diriku melangkah dengannya</p>`,
   },
 ];
-export const SectionRender = () => {
-  const { isEditing, setEditing } = useSectionFormStore();
-
+export const SectionView = () => {
+  const { isEditing, setEditing, disableEditing } = useSectionFormStore();
   const filteredbyPosition = data.sort((a, b) => a.postion - b.postion);
   return (
     <>
@@ -50,8 +60,26 @@ export const SectionRender = () => {
         </div>
 
         <SectionContainer data={filteredbyPosition} />
-        {isEditing && <SectionForm />}
       </div>
+      <Drawer
+        open={isEditing}
+        onClose={() => disableEditing()}
+      >
+        <DrawerContent
+          onPointerDownOutside={(e) => e.preventDefault()}
+          className="max-w-screen-2xl mx-auto"
+        >
+          <VisuallyHidden>
+            <DrawerHeader>
+              <DrawerTitle>Edit Or Create Section</DrawerTitle>
+              <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            </DrawerHeader>
+          </VisuallyHidden>
+          <DrawerFooter>
+            <SectionForm />
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };

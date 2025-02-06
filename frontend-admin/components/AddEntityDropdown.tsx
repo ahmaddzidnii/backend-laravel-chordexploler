@@ -15,7 +15,7 @@ const AddEntityDropdown = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-xl"
+          className="rounded-xl [&_svg]:size-6 "
         >
           <TbVideoPlus />
           Create

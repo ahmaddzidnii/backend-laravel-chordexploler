@@ -9,6 +9,8 @@ import { ReactPlayerComponent } from "@/features/react-player/ReactPlayer";
 import { useGetSongById } from "@/features/songs/hooks/useGetSongById";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { Fragment } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const SongInfo = () => {
   const songId = useParams<{
@@ -18,7 +20,7 @@ export const SongInfo = () => {
   const song = useGetSongById(songId);
 
   if (song.isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSkeleton />;
   }
 
   if (song.isError) {
@@ -71,25 +73,6 @@ export const SongInfo = () => {
               <span>{data?.keys.map((key) => key.key).join(", ")}</span>
             </div>
             <Separator />
-            <div className="space-y-2">
-              <span className="text-muted-foreground">Key Family</span>
-              <div className="flex flex-wrap gap-2">
-                <DataRenderer
-                  fallback="No key family"
-                  data={["Cm", "Ddim", "Eb", "Fm", "Gm", "Ab", "Bb"]}
-                  render={(Item, i) => {
-                    return (
-                      <Badge
-                        key={i}
-                        variant="outline"
-                      >
-                        {Item}
-                      </Badge>
-                    );
-                  }}
-                />
-              </div>
-            </div>
           </CardContent>
         </Card>
         <Button
@@ -115,6 +98,45 @@ export const SongInfo = () => {
             </div>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <span className="text-muted-foreground">Key Family</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {
+                <DataRenderer
+                  data={data?.keys}
+                  render={(key, i) => {
+                    return (
+                      <Fragment key={i}>
+                        <p className="text-muted-foreground">{`${key.key} ${key.family_name} :`}</p>
+                        <div className="flex flex-wrap gap-2">
+                          <DataRenderer
+                            fallback="No key family"
+                            data={key.family.split(",") as string[]}
+                            render={(Item, i) => {
+                              return (
+                                <Badge
+                                  key={i}
+                                  variant="outline"
+                                >
+                                  {Item}
+                                </Badge>
+                              );
+                            }}
+                          />
+                        </div>
+                      </Fragment>
+                    );
+                  }}
+                />
+              }
+            </div>
+          </CardContent>
+        </Card>
         <div>
           <ReactPlayerComponent url={data?.youtube_url!} />
         </div>
@@ -122,3 +144,68 @@ export const SongInfo = () => {
     </div>
   );
 };
+
+function LoadingSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-[2fr,4fr]">
+      {/* Left column - Album Art */}
+      <div className="space-y-4">
+        <Skeleton className="aspect-square w-full rounded-lg" /> {/* Album artwork */}
+        {/* Song Details Card */}
+        <div className="border rounded-lg p-4 space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-20" /> {/* "Song Details" label */}
+            <div className="space-y-3">
+              {/* Status, Genres, Released Year, BPM, Key */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between items-center"
+                >
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <Skeleton className="h-10 w-full" /> {/* Edit Song button */}
+        </div>
+      </div>
+
+      {/* Right column - Song Info */}
+      <div className="space-y-8">
+        {/* Title and Artist */}
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-3/4" /> {/* Song title */}
+          <Skeleton className="h-6 w-1/2" /> {/* Artist name */}
+          <Skeleton className="h-4 w-2/3" /> {/* Record label */}
+        </div>
+
+        {/* Key Family Section */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-24" /> {/* "Key Family" text */}
+          {/* Key grids */}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="space-y-2"
+            >
+              <Skeleton className="h-4 w-16" /> {/* Key label */}
+              <div className="grid grid-cols-7 gap-2">
+                {Array.from({ length: 7 }).map((_, j) => (
+                  <Skeleton
+                    key={j}
+                    className="h-8 w-12"
+                  /> /* Key buttons */
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Video Player Placeholder */}
+        <Skeleton className="w-full aspect-video rounded-lg" />
+      </div>
+    </div>
+  );
+}

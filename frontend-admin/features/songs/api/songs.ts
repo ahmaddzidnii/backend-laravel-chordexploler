@@ -1,4 +1,5 @@
 import { axiosAuthenticatedInstance } from "@/lib/axiosAuthenticatedInstance";
+import { SogInfoResponseType } from "../types";
 
 export interface Pagination {
   last_visible_page: number;
@@ -104,9 +105,9 @@ export const getKeyOptions = async () => {
 };
 
 export const getSongById = async (id: string) => {
-  const response = await axiosAuthenticatedInstance.get<{
-    code: number;
-    data: Daum;
-  }>(`/studio/songs/${id}`, {});
+  const response = await axiosAuthenticatedInstance.get<SogInfoResponseType>(
+    `/studio/songs/${id}`,
+    {}
+  );
   return response.data;
 };
