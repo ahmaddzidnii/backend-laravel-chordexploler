@@ -1,21 +1,19 @@
 "use client";
 
 import { useRef } from "react";
-import { TiThMenu } from "react-icons/ti";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "./ui/input";
-import { useSidebarStore } from "@/store/useSidebarStore";
 import { AuthUser } from "@/types";
 import ProfileDropdown from "@/features/auth/components/ProfileDropdown";
 import ApplicationLogo from "./Logo";
 import AddEntityDropdown from "./AddEntityDropdown";
+import { MenuSidebarButton } from "./MenuSidebarButton";
 
 const Navbar = ({ user }: { user: AuthUser | null }) => {
   const formSearchRef = useRef<HTMLFormElement>(null);
-  const { toggle } = useSidebarStore();
 
   const handleResetButton = () => {
     formSearchRef.current?.reset();
@@ -23,11 +21,7 @@ const Navbar = ({ user }: { user: AuthUser | null }) => {
 
   return (
     <header className="flex justify-between items-center py-[10px] mx-4">
-      <TiThMenu
-        onClick={toggle}
-        className="size-6 mr-4 xl:hidden"
-      />
-
+      <MenuSidebarButton />
       <ApplicationLogo />
       <div className="search-group">
         <form

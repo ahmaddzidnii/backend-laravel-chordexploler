@@ -14,6 +14,14 @@ class SectionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'song_id' => $this->song_id,
+            'name' => $this->name,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'position' => $this->position,
+            'content' => $this->content,
+        ];
     }
 }

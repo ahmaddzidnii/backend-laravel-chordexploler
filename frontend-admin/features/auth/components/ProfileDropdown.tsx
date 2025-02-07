@@ -1,14 +1,10 @@
 "use client";
 
-import {
-  LogOut,
-  Moon,
-  MessageSquarePlus,
-  ChevronRight,
-  User,
-  Youtube,
-  SunIcon,
-} from "lucide-react";
+import React from "react";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+
+import { LogOut, Moon, MessageSquarePlus, User, Youtube, SunIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AuthUser } from "@/types";
 import { useLogout } from "../hooks/useLogout";
-import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
-import Link from "next/link";
-import React from "react";
 
 export default function ProfileDropdown({
   children,
@@ -31,7 +23,6 @@ export default function ProfileDropdown({
   user: AuthUser | null;
 }>) {
   const { logout } = useLogout();
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const menus = [
     [

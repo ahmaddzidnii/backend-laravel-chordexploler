@@ -34,8 +34,8 @@ return new class extends Migration
             $table->string('name');
             $table->integer('start_time');
             $table->integer('end_time');
-            $table->integer('order');
-            $table->text('content');
+            $table->integer('position');
+            $table->longText('content');
             $table->timestamps();
 
             $table->foreignUlid('song_id')->constrained('songs', "id")->onDelete('cascade');

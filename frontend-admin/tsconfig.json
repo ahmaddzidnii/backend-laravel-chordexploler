@@ -6,6 +6,8 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

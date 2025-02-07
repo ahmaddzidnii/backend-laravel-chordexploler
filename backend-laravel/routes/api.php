@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Common\UserController;
 use App\Http\Controllers\Studio\SongController;
 use App\Http\Controllers\Studio\KeyController;
+use App\Http\Controllers\Studio\SectionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -90,14 +91,26 @@ Route::group(['middleware' => 'throttle:api'], function () {
         // Studio Features
         Route::group(['prefix' => 'studio'], function () {
             // Songs
-            Route::get('/songs', [SongController::class, 'index']);
-            Route::get('/songs/{id}', [SongController::class, 'show']);
-            Route::post('/songs', [SongController::class, 'store']);
-            Route::patch('/songs/{id}', [SongController::class, 'update']);
-            Route::delete('/songs', [SongController::class, 'massDestory']);
+            Route::group(['prefix' => 'songs'], function () {
+                Route::get('/', [SongController::class, 'index']);
+                Route::get('/{id}', [SongController::class, 'show']);
+                Route::post('/', [SongController::class, 'store']);
+                Route::patch('/', [SongController::class, 'update']);
+                Route::delete('/', [SongController::class, 'massDestroy']);
+            });
 
             // Key options
             Route::get('/get-key-options', [KeyController::class, 'getOptions']);
+
+            // Sections
+            Route::group(['prefix' => 'sections'], function () {
+                Route::get('/', [SectionController::class, 'index']);
+                Route::get('/{id}', [SectionController::class, 'show']);
+                Route::post('/', [SectionController::class, 'store']);
+                Route::patch('/', [SectionController::class, 'update']);
+                Route::delete('/', [SectionController::class, 'massDestroy']);
+                Route::post('/reorder', [SectionController::class, 'reorder']);
+            });
         });
     });
 });
