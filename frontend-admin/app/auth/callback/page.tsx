@@ -23,9 +23,7 @@ const CallbackPage = ({
   const { isLoading, isError } = handleCallback(resolvedCode.code);
 
   useEffect(() => {
-    if (isLoading) {
-      return;
-    }
+    if (isLoading) return;
 
     if (isError) {
       window.location.href =
@@ -47,13 +45,18 @@ const CallbackPage = ({
 
   if (isLoading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex h-screen w-screen items-center justify-center flex-col space-y-4">
         <Loader2Icon className="animate-spin size-16" />
+        <p>Please wait patiently...</p>
       </div>
     );
   }
 
-  return null;
+  return (
+    <div className="flex h-screen w-screen items-center justify-center flex-col space-y-4">
+      <p>Redirecting to application..</p>
+    </div>
+  );
 };
 
 export default CallbackPage;

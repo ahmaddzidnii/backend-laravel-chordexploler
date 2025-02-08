@@ -270,7 +270,7 @@ class SongController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function massDestory(Request $request)
+    public function massDestroy(Request $request)
     {
         $validated = $request->validate([
             'ids' => ['required', 'array'],

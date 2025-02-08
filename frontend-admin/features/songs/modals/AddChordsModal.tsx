@@ -1,12 +1,13 @@
-import { XIcon } from "lucide-react";
-import { create } from "zustand";
+import { z } from "zod";
 import { useRef } from "react";
-import { toast } from "sonner";
+import { create } from "zustand";
+import { XIcon } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
-import CreateSongForm from "../components/CreateSongForm";
+import CreateSongForm, { formCreateSongSchema } from "../components/CreateSongForm";
 import { useCreateSong } from "../hooks/useCreateSong";
 
 const AddChordsModal = () => {
@@ -15,6 +16,25 @@ const AddChordsModal = () => {
 
   const songsMutation = useCreateSong();
   const queryClient = useQueryClient();
+
+  const handleFormSubmit = (val: z.infer<typeof formCreateSongSchema>) => {
+    toast.promise(
+      songsMutation.mutateAsync(val, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["songs"] });
+          close();
+        },
+        onError: (error) => {
+          console.error(error);
+        },
+      }),
+      {
+        loading: "Creating song...",
+        success: (data: any) => `Song "${data.title}" created successfully`,
+        error: "Failed to create song",
+      }
+    );
+  };
 
   return (
     <Dialog
@@ -41,19 +61,7 @@ const AddChordsModal = () => {
         <div className="flex-1 flex max-h-full overflow-y-auto scrollbar-thin pr-3">
           <CreateSongForm
             formRef={formRef}
-            onFormSubmit={(val) =>
-              songsMutation.mutate(val, {
-                onSuccess: (data) => {
-                  queryClient.invalidateQueries({ queryKey: ["songs"] });
-                  toast.success(`Song "${data.title}" created successfully`, { duration: 5000 });
-                  close();
-                },
-                onError: (error) => {
-                  console.error(error);
-                  toast.error("Failed to create song");
-                },
-              })
-            }
+            onFormSubmit={handleFormSubmit}
           />
         </div>
         <DialogFooter

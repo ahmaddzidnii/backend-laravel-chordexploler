@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { useState } from "react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
@@ -15,25 +15,29 @@ export function useLogout() {
 
   const logout = ({ onError }: { onError?: (error: unknown) => void }) => {
     setIsLoadingLogout(true);
-    axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
-        headers: {
-          Authorization: `Bearer ${getCookie(COOKIE_NAME_ACCESS_TOKEN)}`,
-        },
-        withCredentials: true,
-      })
-      .then((data) => {
+
+    const logoutPromise = axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
+      headers: {
+        Authorization: `Bearer ${getCookie(COOKIE_NAME_ACCESS_TOKEN)}`,
+      },
+      withCredentials: true,
+    });
+
+    toast.promise(logoutPromise, {
+      loading: "Logging out...",
+      success: "Logged out successfully",
+      error: "Failed to logout",
+    });
+
+    logoutPromise
+      .then(() => {
         setIsLoadingLogout(false);
-        // Remove user query from cache
-        queryClient.removeQueries({
-          queryKey: ["user"],
-        });
+        queryClient.removeQueries({ queryKey: ["user"] });
         router.refresh();
       })
       .catch((error) => {
         setIsLoadingLogout(false);
         console.error("Failed to logout:", error);
-        toast.error("Failed to logout");
         onError?.(error);
       });
   };
