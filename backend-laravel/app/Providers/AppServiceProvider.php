@@ -20,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('auth.context', function ($app) {
             return new AuthContext();
         });
+
+        // Telescope
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
