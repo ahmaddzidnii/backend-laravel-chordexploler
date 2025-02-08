@@ -4,10 +4,11 @@ import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { SectionItem } from "./SectionItem";
 import { cn } from "@/lib/utils";
 import { DataRenderer } from "@/components/DataRenderer";
-
-interface SectionContainerProps {
-  data: any[];
-}
+import { useSongId } from "@/hooks/useSongId";
+import { useGetSectionsBySongId } from "../hooks/useGetSections";
+import { useReorderSection } from "../hooks/useReorderSection";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   const result = Array.from(list);
@@ -17,12 +18,18 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   return result;
 }
 
-export const SectionContainer = ({ data }: SectionContainerProps) => {
-  const [orderedData, setOrderedData] = useState(data);
+export const SectionContainer = () => {
+  const songId = useSongId();
+  const { data, isLoading } = useGetSectionsBySongId(songId);
+  const reordeSection = useReorderSection();
+  const queryClient = useQueryClient();
+
+  const [orderedData, setOrderedData] = useState(data?.data ?? []);
 
   useEffect(() => {
-    setOrderedData(data);
-  }, [data]);
+    if (isLoading) return;
+    setOrderedData(data?.data ?? []);
+  }, [data, isLoading]);
 
   const handleDragEnd = (result: DropResult<string>) => {
     const { destination, source, type } = result;
@@ -40,11 +47,24 @@ export const SectionContainer = ({ data }: SectionContainerProps) => {
     if (type === "section") {
       const items = reorder(orderedData, source.index, destination.index).map((item, index) => ({
         ...item,
-        order: index,
+        position: index + 1,
       }));
 
       setOrderedData(items);
-      // TODO: Update the order of the sections in the database
+      toast.promise(
+        reordeSection.mutateAsync(items, {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["sections", songId],
+            });
+          },
+        }),
+        {
+          loading: "Reordering sections",
+          success: "Sections reordered successfully",
+          error: "Failed to reorder sections",
+        }
+      );
     }
   };
 
@@ -59,10 +79,11 @@ export const SectionContainer = ({ data }: SectionContainerProps) => {
           <ol
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={cn("flex flex-col", data.length > 0 ? "mt-4" : "mt-0")}
+            className={cn("flex flex-col", data?.data.length! > 0 ? "mt-4" : "mt-0")}
           >
             <DataRenderer
               fallback="No sections"
+              isLoading={isLoading}
               data={orderedData}
               render={(section, index) => {
                 return (

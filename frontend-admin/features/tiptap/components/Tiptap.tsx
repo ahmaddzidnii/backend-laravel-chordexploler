@@ -6,7 +6,12 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 import { processChordText } from "@/utils/processChordText";
 
-const Tiptap = () => {
+interface TiptapProps {
+  content?: string;
+  onUpdate?: (content: string) => void;
+}
+
+const Tiptap = ({ content, onUpdate }: TiptapProps) => {
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -15,10 +20,12 @@ const Tiptap = () => {
       },
     },
     extensions: [StarterKit, Placeholder.configure({ placeholder: "[A]Mainnya [Bm]gitar" })],
-    content: "",
+    content: content || "",
     onUpdate: ({ editor }) => {
       const htmlChord = processChordText(editor.getText());
       console.log(htmlChord);
+
+      onUpdate?.(editor.getText());
     },
   });
 

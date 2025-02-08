@@ -124,24 +124,30 @@ class SectionController extends Controller
             'sections.*' => ['required', 'array'], // Setiap elemen dalam sections harus berupa array (objek)
             'sections.*.id' => ['required', 'string'],
             'sections.*.position' => ['required', 'integer'],
-            'sections.*.song_id' => ['nullable', 'string'],
-            'sections.*.name' => ['nullable', 'string'],
-            'sections.*.start_time' => ['required', 'integer', 'min:0'],
-            'sections.*.end_time' => ['required', 'integer', 'gt:sections.*.start_time'],
-            'sections.*.content' => ['nullable', 'string'],
+
         ]);
 
-        // dd($validated);
 
         try {
             DB::beginTransaction();
-            foreach ($validated['sections'] as $section) {
-                $section = Section::where([
-                    'id' => $section['id'],
-                ])->update([
-                    'position' => $section['position'],
-                ]);
+            $query = "UPDATE sections SET position = CASE ";
+            $bindings = [];
+
+            foreach ($validated['sections'] as $row) {
+                $query .= "WHEN id = ? THEN ? ";
+                $bindings[] = $row['id'];
+                $bindings[] = $row['position'];
             }
+
+            // Membuat placeholder '?' untuk IN (...)
+            $idPlaceholders = implode(',', array_fill(0, count($validated['sections']), '?'));
+
+            $query .= "END WHERE id IN ($idPlaceholders)";
+
+            // Gabungkan semua bindings (position update + daftar ID)
+            $bindings = array_merge($bindings, array_column($validated['sections'], 'id'));
+
+            DB::update($query, $bindings);
             DB::commit();
             return $this->successResponse(null, 204);
         } catch (\Throwable $th) {

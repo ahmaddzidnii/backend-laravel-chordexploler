@@ -32,7 +32,7 @@ export function useLogout() {
     logoutPromise
       .then(() => {
         setIsLoadingLogout(false);
-        queryClient.removeQueries({ queryKey: ["user"] });
+        queryClient.removeQueries(); // Remove all queries from the cache
         router.refresh();
       })
       .catch((error) => {

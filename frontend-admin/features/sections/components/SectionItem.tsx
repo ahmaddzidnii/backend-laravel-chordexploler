@@ -2,6 +2,7 @@ import { Clock } from "lucide-react";
 import { Draggable } from "@hello-pangea/dnd";
 import { formatSecondsToReadableTime } from "@/utils/formatTime";
 import { Checkbox } from "@/components/ui/checkbox";
+import { processChordText } from "@/utils/processChordText";
 
 interface SectionItemProps {
   data: any;
@@ -35,7 +36,7 @@ export const SectionItem = ({ data, index }: SectionItemProps) => {
           <div
             {...provided.dragHandleProps}
             dangerouslySetInnerHTML={{
-              __html: data.content,
+              __html: processChordText(data.content),
             }}
           ></div>
         </li>
