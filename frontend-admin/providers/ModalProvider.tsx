@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import AddChordsModal from "@/features/songs/modals/AddChordsModal";
 
 const ModalProvider = () => {

@@ -1,27 +1,58 @@
 import axios from "axios";
-import { toast } from "sonner";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useGoogleLogin } from "@react-oauth/google";
-
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 
 export function useLoginWithGoogle() {
-  const router = useRouter();
+  // const { setToken } = useAuth();
 
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+  // const login = useGoogleLogin({
+  //   flow: "auth-code",
+  //   ux_mode: "redirect",
 
-  const { setToken } = useAuth();
+  //   redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL,
+  //   onError: (error) => {
+  //     console.error("Google login error:", error);
+  //     toast.error("Failed to login with Google");
+  //   },
+  //   onSuccess: async ({ code }) => {
+  //     try {
+  //       setIsLoadingLogin(true);
+  //       const response = await axios.get<{
+  //         status_code: number;
+  //         message: string;
+  //         data: { access_token: string };
+  //       }>("http://localhost:8000/api/auth/oauth/google/callback", {
+  //         params: { code },
+  //         withCredentials: true,
+  //       });
+  //       setIsLoadingLogin(false);
+  //       setToken(response.data.data.access_token);
+  //       router.refresh();
+  //     } catch (error) {
+  //       setIsLoadingLogin(false);
+  //       console.error("Failed to login with Google:", error);
+  //       toast.error("Failed to login with Google");
+  //     }
+  //   },
+  // });
 
-  const login = useGoogleLogin({
-    flow: "auth-code",
-    onError: (error) => {
-      console.error("Google login error:", error);
-      toast.error("Failed to login with Google");
-    },
-    onSuccess: async ({ code }) => {
-      try {
-        setIsLoadingLogin(true);
+  const login = () => {
+    const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const redirect_uri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL;
+
+    if (!client_id || !redirect_uri) {
+      console.error("Google Client ID atau Redirect URI tidak ditemukan.");
+      return;
+    }
+
+    const googleLoginUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=email%20profile&prompt=select_account&access_type=offline`;
+
+    window.location.href = googleLoginUrl;
+  };
+
+  const handleCallback = (code: string) => {
+    return useQuery({
+      queryKey: ["google", "callback"],
+      queryFn: async () => {
         const response = await axios.get<{
           status_code: number;
           message: string;
@@ -30,16 +61,11 @@ export function useLoginWithGoogle() {
           params: { code },
           withCredentials: true,
         });
-        setIsLoadingLogin(false);
-        setToken(response.data.data.access_token);
-        router.refresh();
-      } catch (error) {
-        setIsLoadingLogin(false);
-        console.error("Failed to login with Google:", error);
-        toast.error("Failed to login with Google");
-      }
-    },
-  });
 
-  return { login, isLoadingLogin };
+        return response.data.data.access_token;
+      },
+    });
+  };
+
+  return { login, handleCallback };
 }

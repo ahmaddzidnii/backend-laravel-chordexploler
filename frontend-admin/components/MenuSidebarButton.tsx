@@ -11,7 +11,7 @@ export const MenuSidebarButton = () => {
       <Button
         onClick={toggle}
         variant="ghost"
-        className="xl:hidden [&_svg]:size-6"
+        className="xl:hidden pl-0  [&_svg]:size-6"
       >
         <MenuIcon />
       </Button>

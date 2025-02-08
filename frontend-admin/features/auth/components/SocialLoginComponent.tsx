@@ -3,10 +3,18 @@
 import React from "react";
 
 import { useLoginWithGoogle } from "@/features/auth/hooks/useLoginWithGoogle";
+import { useSearchParams } from "next/navigation";
 
 const SocialLoginComponent = () => {
+  const searchParams = useSearchParams();
   const { login, isLoadingLogin } = useLoginWithGoogle();
   const handleGoogleLogin = () => {
+    const state = searchParams.get("state");
+
+    if (state) {
+      sessionStorage.setItem("auth_redirect_state", state);
+    }
+
     login();
   };
   return (

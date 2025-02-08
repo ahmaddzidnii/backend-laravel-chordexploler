@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { Card } from "@/components/ui/card";
 import LoginForm from "@/features/auth/components/LoginForm";
 import SocialLoginComponent from "@/features/auth/components/SocialLoginComponent";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Login Page",
@@ -23,7 +24,9 @@ export default function LoginPage() {
               <span className="text-gray-500 text-sm">or continue with</span>
               <div className="flex-grow h-[1px] bg-gray-300"></div>
             </div>
-            <SocialLoginComponent />
+            <Suspense>
+              <SocialLoginComponent />
+            </Suspense>
             <p className="text-sm">
               Don't have any account? &nbsp;
               <Link

@@ -11,7 +11,7 @@ import { useAddChordModal } from "@/features/songs/modals/AddChordsModal";
 const AddEntityDropdown = () => {
   const { open } = useAddChordModal();
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"

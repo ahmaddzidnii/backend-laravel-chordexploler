@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Roboto } from "next/font/google";
+import { Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -33,7 +33,10 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body className={cn(roboto.className)}>
+      <body
+        className={cn(roboto.className)}
+        suppressHydrationWarning
+      >
         <TanstackProvider>
           <GoogleOAuthProvider clientId="941907082804-4j59igvjeps6fgagur3m47okvngr28lu.apps.googleusercontent.com">
             <ThemeProvider
@@ -43,7 +46,7 @@ export default function RootLayout({
             >
               <AuthContextProvider>
                 <Toaster />
-                <NextTopLoader />
+                <NextTopLoader showSpinner={false} />
                 <ModalProvider />
                 <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
               </AuthContextProvider>
