@@ -23,18 +23,18 @@ class SectionUpdateRequest extends FormRequest
     {
         return [
             'id' => ['required', 'string', 'exists:sections,id'],
-            'name' => ['sometimes', 'string'],
-            'start_time' => ['sometimes', 'integer', 'min:0', function ($attribute, $value, $fail) {
+            'name' => ['nullable', 'string'],
+            'start_time' => ['nullable', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('end_time') && $value >= request()->end_time) {
                     $fail('The ' . $attribute . ' must be less than end time.');
                 }
             }],
-            'end_time' => ['sometimes', 'integer', 'min:0', function ($attribute, $value, $fail) {
+            'end_time' => ['nullable', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('start_time') && $value <= request()->start_time) {
                     $fail('The ' . $attribute . ' must be greater than start time.');
                 }
             }],
-            'content' => ['sometimes', 'string'],
+            'content' => ['nullable', 'string'],
         ];
     }
 }

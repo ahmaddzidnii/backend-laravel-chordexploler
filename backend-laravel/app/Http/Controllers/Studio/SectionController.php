@@ -10,6 +10,7 @@ use App\Http\Resources\Studio\SectionResource;
 use App\Models\Section;
 use App\Traits\ApiResponseHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SectionController extends Controller
 {
@@ -36,7 +37,7 @@ class SectionController extends Controller
 
         $sections  = Section::where([
             'song_id' => $validated['song_id'],
-        ])->get();
+        ])->orderBy('position', 'asc')->get();
 
         return $this->successResponse(SectionResource::collection($sections));
     }
@@ -45,7 +46,7 @@ class SectionController extends Controller
     public function store(SectionCreateRequest $request)
     {
         // Validate the request
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         // Calculate the next position
         $position = Section::where('song_id', $request->song_id)
@@ -72,7 +73,7 @@ class SectionController extends Controller
 
     public function update(SectionUpdateRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         // check if the user is authorized to update the section
         $section = $this->authorize($validated['id']);
@@ -96,6 +97,14 @@ class SectionController extends Controller
             'ids' => ['required', 'array'],
         ]);
 
+        $sections = Section::whereIn('id', $validated['ids'])->get();
+
+        if (count($sections) !== count($validated['ids'])) {
+            throw ValidationException::withMessages([
+                'ids' => 'Some sections do not exist',
+            ]);
+        }
+
         try {
             DB::beginTransaction();
             Section::whereIn('id', $validated['ids'])->delete();
@@ -111,13 +120,23 @@ class SectionController extends Controller
     public function reorder()
     {
         $validated = request()->validate([
-            'sections' => ['required', 'array'],
+            'sections' => ['required', 'array', 'min:1'], // sections harus array dengan minimal 1 item
+            'sections.*' => ['required', 'array'], // Setiap elemen dalam sections harus berupa array (objek)
+            'sections.*.id' => ['required', 'string'],
+            'sections.*.position' => ['required', 'integer'],
+            'sections.*.song_id' => ['nullable', 'string'],
+            'sections.*.name' => ['nullable', 'string'],
+            'sections.*.start_time' => ['required', 'integer', 'min:0'],
+            'sections.*.end_time' => ['required', 'integer', 'gt:sections.*.start_time'],
+            'sections.*.content' => ['nullable', 'string'],
         ]);
+
+        // dd($validated);
 
         try {
             DB::beginTransaction();
             foreach ($validated['sections'] as $section) {
-                Section::where([
+                $section = Section::where([
                     'id' => $section['id'],
                 ])->update([
                     'position' => $section['position'],
