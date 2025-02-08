@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Traits\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Http\Resources\UserResource;
 use Exception;
 
 class TokenController extends Controller
@@ -18,6 +21,39 @@ class TokenController extends Controller
         protected readonly AuthService $authService,
         protected readonly JwtHelpers $jwtHelpers
     ) {}
+
+    public function register(UserRegisterRequest $request)
+    {
+        $data = $request->validated();
+        $user = $this->authService->registerUser($data);
+        $user->password = bcrypt($data['password']);
+        $user->save();
+        return $this->successResponse(new UserResource($user));
+    }
+
+    public function login(UserLoginRequest $request)
+    {
+        $data = $request->validated();
+        $tokens = $this->authService->loginUser($data);
+
+        $accessTokenCookie = cookie(
+            name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
+            value: $tokens['access_token'],
+            secure: env("APP_ENV") != "local",
+            httpOnly: false
+        );
+        $refreshTokenCookie = cookie(
+            name: config('cookies.COOKIE_NAME_REFRESH_TOKEN'),
+            value: $tokens['refresh_token'],
+            secure: env("APP_ENV") != "local",
+            httpOnly: true
+        );
+
+        return $this->successResponse([
+            'access_token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token'],
+        ])->withCookie($accessTokenCookie)->withCookie($refreshTokenCookie);
+    }
 
     public function refresh(Request $request)
     {
@@ -44,7 +80,7 @@ class TokenController extends Controller
         $accessToken = $request->bearerToken() ?? $request->query('access_token') ?? $request->cookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
 
         if (!$refreshToken || !$accessToken) {
-            throw new Exception("Token is not provided", 401);
+            throw new AuthException("Token is not provided", 401);
         }
 
         try {

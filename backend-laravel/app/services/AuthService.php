@@ -2,14 +2,10 @@
 
 namespace App\Services;
 
-use Exception;
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Session;
 use App\Enums\ProviderEnum;
 use App\Helpers\JwtHelpers;
-use Illuminate\Http\Request;
-use App\Models\BlacklistedToken;
 use App\Exceptions\AuthException;
 use App\Helpers\GoogleOAuthHelper;
 use App\Repositories\AccountRepository;
@@ -27,6 +23,50 @@ class AuthService
         protected SessionRepository $sessionRepository,
         protected AccountRepository $accountRepository
     ) {}
+
+    public function registerUser($data)
+    {
+        $user = $this->userRepository->createUser($data);
+        return $user;
+    }
+
+    public function loginUser($data)
+    {
+        $user = $this->userRepository->findByEmail($data['email']);
+        $userAgent = request()->userAgent();
+
+        if (!$user  || !password_verify($data['password'], $user->password)) {
+            throw new AuthException("Invalid user or password", 400);
+        }
+
+        $accessToken = $this->jwtHelpers->createToken($user);
+        $refreshToken = $this->jwtHelpers->createToken($user);
+
+
+        // Check if there's an existing active session for this user agent
+        $existingSession = $this->sessionRepository->getSessionByUserAndAgent($user->id, $userAgent);
+
+        if ($existingSession) {
+            // Update existing session
+            $existingSession->update([
+                'refresh_token' => $refreshToken,
+                'last_login' => now()->timestamp,
+                'ip' => request()->ip()
+            ]);
+        } else {
+            // Create new session
+            $this->sessionRepository->createNewSession(
+                $user->id,
+                $userAgent,
+                $refreshToken
+            );
+        }
+
+        return [
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken
+        ];
+    }
 
     public function handleGoogleLogin(string $code, string $userAgent)
     {
@@ -88,21 +128,11 @@ class AuthService
                 );
             }
 
-            // Get all active sessions for response
-            $activeSessions = $this->sessionRepository->getActiveSessionsByUser($user->id);
-
             DB::commit();
 
             return [
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
-                'active_sessions' => $activeSessions->map(function ($session) {
-                    return [
-                        'user_agent' => $session->user_agent,
-                        'last_login' => Carbon::createFromTimestampMs($session->last_login)->toDateTimeString(),
-                        'ip' => $session->ip
-                    ];
-                })
             ];
         } catch (\Exception $e) {
             DB::rollBack();

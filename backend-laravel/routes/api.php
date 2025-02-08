@@ -67,6 +67,10 @@ Route::group(['middleware' => 'throttle:api'], function () {
             // Route::get('facebook/callback', [FacebookAuthController::class, 'callback'])->name('facebook.callback');
         });
 
+        // Credentials Login
+        Route::post('register', [TokenController::class, 'register'])->name('register');
+        Route::post('login', [TokenController::class, 'login'])->name('login');
+
         // Token Management
         Route::get('refresh', [TokenController::class, 'refresh'])->name('refresh');
         Route::get('logout', [TokenController::class, 'logout'])->name('logout');
