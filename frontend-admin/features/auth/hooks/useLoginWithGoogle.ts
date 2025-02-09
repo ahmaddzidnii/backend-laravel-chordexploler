@@ -2,39 +2,6 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 export function useLoginWithGoogle() {
-  // const { setToken } = useAuth();
-
-  // const login = useGoogleLogin({
-  //   flow: "auth-code",
-  //   ux_mode: "redirect",
-
-  //   redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL,
-  //   onError: (error) => {
-  //     console.error("Google login error:", error);
-  //     toast.error("Failed to login with Google");
-  //   },
-  //   onSuccess: async ({ code }) => {
-  //     try {
-  //       setIsLoadingLogin(true);
-  //       const response = await axios.get<{
-  //         status_code: number;
-  //         message: string;
-  //         data: { access_token: string };
-  //       }>("http://localhost:8000/api/auth/oauth/google/callback", {
-  //         params: { code },
-  //         withCredentials: true,
-  //       });
-  //       setIsLoadingLogin(false);
-  //       setToken(response.data.data.access_token);
-  //       router.refresh();
-  //     } catch (error) {
-  //       setIsLoadingLogin(false);
-  //       console.error("Failed to login with Google:", error);
-  //       toast.error("Failed to login with Google");
-  //     }
-  //   },
-  // });
-
   const login = () => {
     const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const redirect_uri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL;

@@ -20,14 +20,22 @@ const CallbackPage = ({
   const savedState =
     typeof window !== "undefined" ? sessionStorage.getItem("auth_redirect_state") : null;
 
-  const { isLoading, isError } = handleCallback(resolvedCode.code);
+  const { isLoading, isError, error } = handleCallback(resolvedCode.code);
 
   useEffect(() => {
     if (isLoading) return;
 
     if (isError) {
-      window.location.href =
-        process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/auth/login";
+      const errorObject = error as unknown as any;
+      const errors = btoa(
+        JSON.stringify({
+          status_code: errorObject.status,
+          message: errorObject.code,
+        })
+      );
+      window.location.href = `${
+        process.env.NEXT_PUBLIC_PATH_LOGIN_PAGE ?? "/auth/login"
+      }?error=${errors}`;
       return;
     }
 
