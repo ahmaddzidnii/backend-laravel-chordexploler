@@ -8,12 +8,12 @@ export default authMiddleware(async (auth, req) => {
   const isAuthRoutes = createRouteMatcher(["/auth(.*)"]);
 
   if (req.nextUrl.pathname === "/") {
-    return NextResponse.redirect(
-      new URL(
-        process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/dashboard",
-        req.nextUrl
-      )
-    );
+    // return NextResponse.redirect(
+    //   new URL(
+    //     process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/dashboard",
+    //     req.nextUrl
+    //   )
+    // );
   }
 
   // Get state from search params
