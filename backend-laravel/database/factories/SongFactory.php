@@ -22,14 +22,14 @@ class SongFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => "01jk61rkvb48a7rf8kmg108q89",
+            'user_id' => '01jk61rkvb48a7rf8kmg108q89',
             'title' => $this->faker->sentence(3),
             'artist' => implode(', ', array_map(function () {
                 return $this->faker->name;
             }, range(1, $this->faker->numberBetween(1, 3)))),
             'slug' => Str::slug($this->faker->sentence(3)),
-            'cover' => "https://lh3.googleusercontent.com/lkr1V6gP9v3t91jOx1WwAHJW4uBiQo_3VOMyTPF8hQV_-WCrO8Tdhshs05340bzrhZ2nIuotoiVz1ISOXA",
-            'youtube_url' => "https://youtu.be/ZeFpigRaXbI?si=j-sC3yNkCRK_0qzE",
+            'cover' => 'https://lh3.googleusercontent.com/lkr1V6gP9v3t91jOx1WwAHJW4uBiQo_3VOMyTPF8hQV_-WCrO8Tdhshs05340bzrhZ2nIuotoiVz1ISOXA',
+            'youtube_url' => 'https://youtu.be/ZeFpigRaXbI?si=j-sC3yNkCRK_0qzE',
             'released_year' => $this->faker->year(),
             'publisher' => $this->faker->company(),
             'bpm' => $this->faker->numberBetween(60, 200), // BPM acak

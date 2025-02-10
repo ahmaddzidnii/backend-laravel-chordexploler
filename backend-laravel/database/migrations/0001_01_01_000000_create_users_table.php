@@ -30,7 +30,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreignUlid('user_id')->constrained('users', "id")->onDelete('cascade');
+            $table->foreignUlid('user_id')->constrained('users', 'id')->onDelete('cascade');
         });
     }
 

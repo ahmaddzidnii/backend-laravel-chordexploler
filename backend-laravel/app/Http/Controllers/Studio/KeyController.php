@@ -14,6 +14,7 @@ class KeyController extends Controller
     public function getOptions()
     {
         $keys = Key::without('songs')->get();
+
         return $this->successResponse(KeyOptionsResource::collection($keys));
     }
 

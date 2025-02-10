@@ -36,8 +36,8 @@ const SectionForm = () => {
     resolver: zodResolver(formCreateSectionSchema),
     defaultValues: {
       name: "",
-      start_time: "0",
-      end_time: "0",
+      start_time: "",
+      end_time: "",
       content: "",
     },
   });

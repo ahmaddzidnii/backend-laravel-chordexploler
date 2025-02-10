@@ -9,7 +9,6 @@ class UserService
     /**
      * Create or update a user based on Google API login.
      *
-     * @param  $googleUser
      * @return User
      */
     public function createOrUpdateUserGoogle($googleUser)

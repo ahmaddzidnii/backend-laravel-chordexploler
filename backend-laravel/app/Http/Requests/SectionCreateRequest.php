@@ -26,12 +26,12 @@ class SectionCreateRequest extends FormRequest
             'name' => ['required', 'string'],
             'start_time' => ['required', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('end_time') && $value >= request()->end_time) {
-                    $fail('The ' . $attribute . ' must be less than end time.');
+                    $fail('The '.$attribute.' must be less than end time.');
                 }
             }],
             'end_time' => ['required', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('start_time') && $value <= request()->start_time) {
-                    $fail('The ' . $attribute . ' must be greater than start time.');
+                    $fail('The '.$attribute.' must be greater than start time.');
                 }
             }],
             'content' => ['required', 'string'],

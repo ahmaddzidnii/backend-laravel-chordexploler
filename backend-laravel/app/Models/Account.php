@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Account extends Model
 {
-
     use HasUlids;
 
     /**
@@ -16,7 +15,6 @@ class Account extends Model
      *
      * @var list<string>
      */
-
     protected $fillable = [
         'provider',
         'user_id',

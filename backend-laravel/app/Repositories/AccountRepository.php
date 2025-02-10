@@ -35,7 +35,7 @@ class AccountRepository
             [
                 'user_id' => $userId,
                 'provider' => $provider,
-                'provider_id' => $providerId
+                'provider_id' => $providerId,
             ],
         );
     }

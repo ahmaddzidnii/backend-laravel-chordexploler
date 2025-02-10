@@ -14,7 +14,6 @@ use Illuminate\Validation\ValidationException;
 
 class SectionController extends Controller
 {
-
     use ApiResponseHelper;
 
     private function authorize(string $sectionId): Section
@@ -32,16 +31,15 @@ class SectionController extends Controller
     public function index()
     {
         $validated = request()->validate([
-            'song_id' => ["required", "string", "exists:songs,id"],
+            'song_id' => ['required', 'string', 'exists:songs,id'],
         ]);
 
-        $sections  = Section::where([
+        $sections = Section::where([
             'song_id' => $validated['song_id'],
         ])->orderBy('position', 'asc')->get();
 
         return $this->successResponse(SectionResource::collection($sections));
     }
-
 
     public function store(SectionCreateRequest $request)
     {
@@ -60,7 +58,6 @@ class SectionController extends Controller
 
         return $this->successResponse(new SectionResource($section), 201);
     }
-
 
     public function show(string $id)
     {
@@ -127,14 +124,13 @@ class SectionController extends Controller
 
         ]);
 
-
         try {
             DB::beginTransaction();
-            $query = "UPDATE sections SET position = CASE ";
+            $query = 'UPDATE sections SET position = CASE ';
             $bindings = [];
 
             foreach ($validated['sections'] as $row) {
-                $query .= "WHEN id = ? THEN ? ";
+                $query .= 'WHEN id = ? THEN ? ';
                 $bindings[] = $row['id'];
                 $bindings[] = $row['position'];
             }
@@ -149,6 +145,7 @@ class SectionController extends Controller
 
             DB::update($query, $bindings);
             DB::commit();
+
             return $this->successResponse(null, 204);
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('bpm')->nullable();
             $table->timestamps();
 
-            $table->foreignUlid('user_id')->nullable()->constrained('users', "id")->onDelete('cascade');
+            $table->foreignUlid('user_id')->nullable()->constrained('users', 'id')->onDelete('cascade');
         });
 
         Schema::create('sections', function (Blueprint $table) {
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->longText('content');
             $table->timestamps();
 
-            $table->foreignUlid('song_id')->constrained('songs', "id")->onDelete('cascade');
+            $table->foreignUlid('song_id')->constrained('songs', 'id')->onDelete('cascade');
         });
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BlacklistedToken extends Model
 {
     use HasUlids;
+
     protected $table = 'blacklisted_tokens';
 
     protected static function boot()

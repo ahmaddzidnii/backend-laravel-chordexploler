@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Helpers\AuthContext;
-use App\Services\AuthService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register AuthContext singleton
         $this->app->singleton('auth.context', function ($app) {
-            return new AuthContext();
+            return new AuthContext;
         });
 
         // Telescope

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Auth\Oauth;
 
-use App\Services\AuthService;
-use App\Traits\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\GoogleCallbackRequest;
+use App\Services\AuthService;
+use App\Traits\ApiResponseHelper;
 
 class GoogleController extends Controller
 {
     use ApiResponseHelper;
-
 
     public function __construct(protected readonly AuthService $authService) {}
 
@@ -26,13 +25,13 @@ class GoogleController extends Controller
         $accessTokenCookie = cookie(
             name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
             value: $accessToken,
-            secure: env("APP_ENV") != "local",
+            secure: env('APP_ENV') != 'local',
             httpOnly: false
         );
         $cookieRefreshToken = cookie(
             name: config('cookies.COOKIE_NAME_REFRESH_TOKEN'),
             value: $refreshToken,
-            secure: env("APP_ENV") != "local",
+            secure: env('APP_ENV') != 'local',
             httpOnly: true
         );
 

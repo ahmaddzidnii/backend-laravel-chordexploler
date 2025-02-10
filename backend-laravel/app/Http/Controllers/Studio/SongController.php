@@ -82,22 +82,20 @@ class SongController extends Controller
                 'publisher' => $validated['publisher'],
                 'bpm' => $validated['bpm'],
                 'slug' => $slug,
-                'user_id' => $userId
+                'user_id' => $userId,
             ]);
-
 
             // Connect key to song
 
             // Pastikan 'key' ada dan tidak kosong sebelum json_decode()
-            $keys = isset($validated['key']) && !empty($validated['key'])
+            $keys = isset($validated['key']) && ! empty($validated['key'])
                 ? json_decode($validated['key'], true)
                 : [];
 
             // Pastikan hasil json_decode adalah array
-            if (!is_array($keys)) {
+            if (! is_array($keys)) {
                 $keys = [];
             }
-
 
             // Verify that all key_ids exist in the keys table first
             $existingKeys = DB::table('keys')
@@ -114,16 +112,16 @@ class SongController extends Controller
 
             // Handle image upload
             $file = $validated['cover'];
-            $fileName = uniqid("chxp") . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
-
+            $fileName = uniqid('chxp').'-'.$this->uniqueIdGenerator->generateVideoId().'.'.$file->getClientOriginalExtension();
 
             // Upload file
             $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
 
-            if (!$path) {
+            if (! $path) {
                 DB::rollBack();
+
                 return response()->json([
-                    'error' => 'Failed to upload image.'
+                    'error' => 'Failed to upload image.',
                 ], 500);
             }
 
@@ -151,7 +149,7 @@ class SongController extends Controller
 
         $song = Song::where('id', $id)->where('id', $id)->with(['sections', 'keys'])->first();
 
-        if (!$song) {
+        if (! $song) {
             return $this->errorResponse('Song not found.', 404);
         }
 
@@ -161,7 +159,6 @@ class SongController extends Controller
 
         return $this->successResponse(new SongResource($song));
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -177,10 +174,10 @@ class SongController extends Controller
             // Ambil data lagu lama
             $song = Song::where([
                 'id' => $id,
-                'user_id' => $userId
+                'user_id' => $userId,
             ])->first();
 
-            if (!$song) {
+            if (! $song) {
                 return response()->json(['error' => 'Song not found'], 404);
             }
 
@@ -237,19 +234,20 @@ class SongController extends Controller
             // Handle image upload jika ada gambar baru
             if (isset($validated['cover'])) {
                 $file = $validated['cover'];
-                $fileName = uniqid("chxp") . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
+                $fileName = uniqid('chxp').'-'.$this->uniqueIdGenerator->generateVideoId().'.'.$file->getClientOriginalExtension();
 
                 // Upload file baru ke S3
                 $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
 
-                if (!$path) {
+                if (! $path) {
                     DB::rollBack();
+
                     return response()->json(['error' => 'Failed to upload image.'], 500);
                 }
 
                 // Hapus gambar lama jika ada
                 if ($oldCover) {
-                    $oldCoverPath = 'images/songs/cover/' . basename($oldCover);
+                    $oldCoverPath = 'images/songs/cover/'.basename($oldCover);
                     Storage::disk('s3')->delete($oldCoverPath);
                 }
 
@@ -259,13 +257,13 @@ class SongController extends Controller
             }
 
             DB::commit();
+
             return $this->successResponse(new SongResource($song), 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -289,7 +287,7 @@ class SongController extends Controller
             foreach ($songs as $song) {
                 // Hapus gambar cover jika ada
                 if ($song->cover) {
-                    $coverPath = 'images/songs/cover/' . basename($song->cover);
+                    $coverPath = 'images/songs/cover/'.basename($song->cover);
                     Storage::disk('s3')->delete($coverPath);
                 }
 
@@ -305,6 +303,6 @@ class SongController extends Controller
             throw $th;
         }
 
-        return $this->successResponse("OK", 200);
+        return $this->successResponse('OK', 200);
     }
 }

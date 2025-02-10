@@ -16,7 +16,7 @@ class UserRepository
         return User::firstOrCreate(
             [
                 'provider_id' => $userInfo['id'],
-                'provider' => 'google'
+                'provider' => 'google',
             ],
             [
                 'name' => $userInfo['name'],
@@ -24,7 +24,7 @@ class UserRepository
                 'avatar' => $userInfo['picture'],
                 'role' => 'user',
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
     }

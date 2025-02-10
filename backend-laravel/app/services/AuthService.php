@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-use App\Models\Session;
 use App\Enums\ProviderEnum;
-use App\Helpers\JwtHelpers;
 use App\Exceptions\AuthException;
 use App\Helpers\GoogleOAuthHelper;
+use App\Helpers\JwtHelpers;
+use App\Models\Session;
 use App\Repositories\AccountRepository;
 use App\Repositories\SessionRepository;
 use App\Repositories\TokenRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AuthService
@@ -27,6 +27,7 @@ class AuthService
     public function registerUser($data)
     {
         $user = $this->userRepository->createUser($data);
+
         return $user;
     }
 
@@ -35,13 +36,12 @@ class AuthService
         $user = $this->userRepository->findByEmail($data['email']);
         $userAgent = request()->userAgent();
 
-        if (!$user  || !password_verify($data['password'], $user->password)) {
-            throw new AuthException("Invalid user or password", 400);
+        if (! $user || ! password_verify($data['password'], $user->password)) {
+            throw new AuthException('Invalid user or password', 400);
         }
 
         $accessToken = $this->jwtHelpers->createToken($user);
         $refreshToken = $this->jwtHelpers->createToken($user);
-
 
         // Check if there's an existing active session for this user agent
         $existingSession = $this->sessionRepository->getSessionByUserAndAgent($user->id, $userAgent);
@@ -51,7 +51,7 @@ class AuthService
             $existingSession->update([
                 'refresh_token' => $refreshToken,
                 'last_login' => now()->timestamp,
-                'ip' => request()->ip()
+                'ip' => request()->ip(),
             ]);
         } else {
             // Create new session
@@ -64,7 +64,7 @@ class AuthService
 
         return [
             'access_token' => $accessToken,
-            'refresh_token' => $refreshToken
+            'refresh_token' => $refreshToken,
         ];
     }
 
@@ -84,7 +84,7 @@ class AuthService
                 // Check if user email already exists
                 $user = $this->userRepository->findByEmail($userInfo['email']);
 
-                if (!$user) {
+                if (! $user) {
                     // Create new user if not exists
                     $user = $this->userRepository->createUser([
                         'name' => $userInfo['name'],
@@ -117,7 +117,7 @@ class AuthService
                 $existingSession->update([
                     'refresh_token' => $refreshToken,
                     'last_login' => now()->timestamp,
-                    'ip' => request()->ip()
+                    'ip' => request()->ip(),
                 ]);
             } else {
                 // Create new session
@@ -147,7 +147,7 @@ class AuthService
                 ->where('refresh_token', $refreshToken)
                 ->update([
                     'is_active' => false,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         });
     }
@@ -181,12 +181,12 @@ class AuthService
 
             return $query->update([
                 'is_active' => false,
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
         });
     }
 
-    public  function refreshAccessToken(string $refreshToken)
+    public function refreshAccessToken(string $refreshToken)
     {
         try {
             $this->jwtHelpers->validateToken($refreshToken);
@@ -199,14 +199,14 @@ class AuthService
             // Check user refresh token in database
             $session = $this->sessionRepository->findActiveSessionByRefreshToken($refreshToken);
 
-            if (!$session) {
-                throw new AuthException("Invalid refresh token or session expired", 401);
+            if (! $session) {
+                throw new AuthException('Invalid refresh token or session expired', 401);
             }
 
             $user = $session->user;
 
-            if (!$user) {
-                throw new AuthException("User not found", 404);
+            if (! $user) {
+                throw new AuthException('User not found', 404);
             }
 
             // Generate new access token
@@ -219,7 +219,7 @@ class AuthService
             // Update session last activity
             $session->update([
                 'last_login' => now()->timestamp,
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
 
             DB::commit();
@@ -231,8 +231,8 @@ class AuthService
                 'session_info' => [
                     'last_login' => Carbon::createFromTimestamp($session->last_login, config('app.timezone'))->toDateTimeString(),
                     'user_agent' => $session->user_agent,
-                    'ip' => $session->ip
-                ]
+                    'ip' => $session->ip,
+                ],
             ];
         } catch (\Exception $e) {
             DB::rollBack();

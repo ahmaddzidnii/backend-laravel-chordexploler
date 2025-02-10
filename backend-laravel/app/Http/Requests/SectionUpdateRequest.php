@@ -26,12 +26,12 @@ class SectionUpdateRequest extends FormRequest
             'name' => ['nullable', 'string'],
             'start_time' => ['nullable', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('end_time') && $value >= request()->end_time) {
-                    $fail('The ' . $attribute . ' must be less than end time.');
+                    $fail('The '.$attribute.' must be less than end time.');
                 }
             }],
             'end_time' => ['nullable', 'integer', 'min:0', function ($attribute, $value, $fail) {
                 if (request()->has('start_time') && $value <= request()->start_time) {
-                    $fail('The ' . $attribute . ' must be greater than start time.');
+                    $fail('The '.$attribute.' must be greater than start time.');
                 }
             }],
             'content' => ['nullable', 'string'],

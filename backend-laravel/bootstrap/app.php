@@ -15,24 +15,25 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append([
-            \App\Http\Middleware\SecureHeaders::class
+            \App\Http\Middleware\SecureHeaders::class,
         ]);
 
         $middleware->alias([
-            'jwt.middleware' => \App\Http\Middleware\AuthMiddleware::class
+            'jwt.middleware' => \App\Http\Middleware\AuthMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return (new class {
+                return (new class
+                {
                     use ApiResponseHelper;
                 })->errorResponse('Route not found.', 404);
             }
@@ -40,7 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return (new class {
+                return (new class
+                {
                     use ApiResponseHelper;
                 })->errorResponse('Method not allowed.', 405);
             }
@@ -48,9 +50,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (TooManyRequestsHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return (new class {
+                return (new class
+                {
                     use ApiResponseHelper;
-                })->errorResponse("Too many request, please slow down", 429);
+                })->errorResponse('Too many request, please slow down', 429);
             }
         });
         // $exceptions->render(function (\RuntimeException $e, Request $request) {
@@ -89,7 +92,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AuthException $e, Request $request) {
             if ($request->is('api/*')) {
-                return (new class {
+                return (new class
+                {
                     use ApiResponseHelper;
                 })->errorResponse($e->getMessage(), 401);
             }
@@ -97,7 +101,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*')) {
-                return (new class {
+                return (new class
+                {
                     use ApiResponseHelper;
                 })->errorResponse($e->validator->errors()->toArray(), 400);
             }

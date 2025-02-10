@@ -5,9 +5,13 @@ namespace App\Helpers;
 class UniqueIdGenerator
 {
     private const BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
     private const ID_LENGTH = 5;
+
     private $workerId;
+
     private $lastTimestamp = -1;
+
     private $sequence = 0;
 
     public function __construct(int $workerId = 0)
@@ -49,7 +53,7 @@ class UniqueIdGenerator
         $encoded = '';
 
         while ($num > 0) {
-            $encoded = self::BASE62[$num % $baseLength] . $encoded;
+            $encoded = self::BASE62[$num % $baseLength].$encoded;
             $num = intval($num / $baseLength);
         }
 

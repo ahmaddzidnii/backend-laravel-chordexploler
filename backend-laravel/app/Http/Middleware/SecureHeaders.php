@@ -21,18 +21,17 @@ class SecureHeaders
      */
     public function handle(Request $request, Closure $next): Response
     {
-        foreach ($this->unwantedHeaderList as $header)
+        foreach ($this->unwantedHeaderList as $header) {
             header_remove($header);
+        }
 
         return $next($request);
     }
 
-    /**
-     * @param $headerList
-     */
     private function removeUnwantedHeaders($headerList)
     {
-        foreach ($headerList as $header)
+        foreach ($headerList as $header) {
             header_remove($header);
+        }
     }
 }

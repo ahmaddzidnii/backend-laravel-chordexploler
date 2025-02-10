@@ -35,7 +35,6 @@ class KeySeeder extends Seeder
             ]);
         }
 
-
         $minorScale = [
             'Cm' => ['Cm', 'Ddim', 'D#', 'Fm', 'Gm', 'G#', 'A#'],
             'C#m' => ['C#m', 'D#dim', 'E', 'F#m', 'G#m', 'A', 'B'],

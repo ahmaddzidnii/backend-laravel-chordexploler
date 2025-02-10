@@ -25,7 +25,7 @@ class SongRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'artist' => ['required', 'string'],
-            'key' => ['required',],
+            'key' => ['required'],
             'status' => ['required', Rule::in(['draft', 'published'])],
             'cover' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5072'],
             'genre' => ['required', 'string'],

@@ -16,7 +16,7 @@ class SessionRepository
             'is_active' => true,
             'ip' => request()->ip(), // Adding IP tracking
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
     }
 

@@ -3,9 +3,9 @@
 use App\Http\Controllers\Auth\Oauth\GoogleController;
 use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Common\UserController;
-use App\Http\Controllers\Studio\SongController;
 use App\Http\Controllers\Studio\KeyController;
 use App\Http\Controllers\Studio\SectionController;
+use App\Http\Controllers\Studio\SongController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +30,7 @@ Route::group(['middleware' => 'throttle:api'], function () {
         // Product Catalog
         Route::group([
             'prefix' => 'products',
-            'as' => 'products.'
+            'as' => 'products.',
         ], function () {
             // Route::get('/', [ProductController::class, 'index'])->name('index');
             // Route::get('/{product}', [ProductController::class, 'show'])->name('show');
@@ -41,7 +41,7 @@ Route::group(['middleware' => 'throttle:api'], function () {
         // Categories
         Route::group([
             'prefix' => 'categories',
-            'as' => 'categories.'
+            'as' => 'categories.',
         ], function () {
             // Route::get('/', [CategoryController::class, 'index'])->name('index');
             // Route::get('/{category}', [CategoryController::class, 'show'])->name('show');
@@ -60,7 +60,7 @@ Route::group(['middleware' => 'throttle:api'], function () {
         // OAuth Routes
         Route::group([
             'prefix' => 'oauth',
-            'as' => 'oauth.'
+            'as' => 'oauth.',
         ], function () {
             Route::get('google/callback', [GoogleController::class, 'callback'])->name('google.callback');
             // Mudah menambahkan provider OAuth lain
@@ -82,12 +82,12 @@ Route::group(['middleware' => 'throttle:api'], function () {
     |--------------------------------------------------------------------------
     */
     Route::group([
-        'middleware' => 'jwt.middleware'
+        'middleware' => 'jwt.middleware',
     ], function () {
         // Users
         Route::group([
             'prefix' => 'users',
-            'as' => 'users.'
+            'as' => 'users.',
         ], function () {
             Route::get('/', [UserController::class, 'users']);
         });

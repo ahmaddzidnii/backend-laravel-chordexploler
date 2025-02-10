@@ -36,7 +36,6 @@ class JwtHelpers
             'email' => $user['email'],
         ];
 
-
         return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
     }
 
@@ -55,14 +54,14 @@ class JwtHelpers
             return [
                 'valid' => true,
                 'decoded' => $decoded,
-                'status' => 200
+                'status' => 200,
             ];
         } catch (\Firebase\JWT\ExpiredException $e) {
             throw new JwtException('Token has expired', 401);
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
             throw new JwtException('Signature not valid', 401);
         } catch (\Exception $e) {
-            Log::error("Error JwtHelpers validateToken:", ['error' => $e->getMessage()]);
+            Log::error('Error JwtHelpers validateToken:', ['error' => $e->getMessage()]);
             throw new JwtException('Token is not valid', 401);
         }
     }

@@ -9,7 +9,6 @@ class Key extends Model
 {
     use HasUlids;
 
-
     /**
      * The attributes that are mass assignable.
      *

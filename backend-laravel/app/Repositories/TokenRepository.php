@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
-use Carbon\Carbon;
+use App\Exceptions\AuthException;
 use App\Helpers\JwtHelpers;
 use App\Models\BlacklistedToken;
-use App\Exceptions\AuthException;
+use Carbon\Carbon;
 
 class TokenRepository
 {
@@ -17,7 +17,7 @@ class TokenRepository
             $decodedToken = $this->jwtHelpers->validateToken($token)['decoded'];
             $jti = $decodedToken->jti;
         } catch (\Throwable $th) {
-            throw new AuthException();
+            throw new AuthException;
         }
 
         $expiresAt = Carbon::createFromTimestamp($decodedToken->exp, config('app.timezone'));
@@ -33,7 +33,7 @@ class TokenRepository
             $decodedToken = $this->jwtHelpers->validateToken($token)['decoded'];
             $jti = $decodedToken->jti;
         } catch (\Throwable $th) {
-            throw new AuthException();
+            throw new AuthException;
         }
 
         return BlacklistedToken::where('jti', $jti)->exists();

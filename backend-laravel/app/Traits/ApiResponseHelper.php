@@ -19,7 +19,6 @@ trait ApiResponseHelper
         return response()->json($response, $code);
     }
 
-
     public function errorResponse($error, $code = 400)
     {
         $response = [
@@ -40,8 +39,8 @@ trait ApiResponseHelper
             'items' => [
                 'per_page' => $paginator->perPage(),
                 'count' => $paginator->count(),
-                'total' => $paginator->total()
-            ]
+                'total' => $paginator->total(),
+            ],
         ];
     }
 }

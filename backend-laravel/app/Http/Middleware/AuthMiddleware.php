@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthMiddleware
 {
-
     public function __construct(
         protected readonly JwtHelpers $jwtHelpers,
         protected readonly TokenRepository $tokenRepository
@@ -28,8 +27,8 @@ class AuthMiddleware
         // Get refresh token from cookie, bearer token, or query string
         $token = $request->cookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN')) ?? $request->bearerToken() ?? $request->query('access_token');
 
-        if (!$token) {
-            throw new AuthException();
+        if (! $token) {
+            throw new AuthException;
         }
 
         try {
@@ -40,10 +39,11 @@ class AuthMiddleware
 
         // Check if token is blacklisted
         if ($this->tokenRepository->isTokenBlacklisted($token)) {
-            throw new AuthException();
+            throw new AuthException;
         }
 
         authContext()->setUser($validatedToken['decoded']);
+
         return $next($request);
     }
 }

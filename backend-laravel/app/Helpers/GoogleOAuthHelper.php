@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class GoogleOAuthHelper
@@ -25,7 +25,7 @@ class GoogleOAuthHelper
 
             if ($statusCode >= 400 && $statusCode < 500) {
                 // Error karena permintaan tidak valid
-                Log::warning('Google OAuth Error: ' . $e->getMessage(), [
+                Log::warning('Google OAuth Error: '.$e->getMessage(), [
                     'context' => [
                         'exception_class' => get_class($e),
                         'file' => $e->getFile(),
@@ -40,7 +40,7 @@ class GoogleOAuthHelper
                 ]);
             } elseif ($statusCode >= 500) {
                 // Error karena server Google
-                Log::error('Google OAuth Server Error: ' . $e->getMessage(), [
+                Log::error('Google OAuth Server Error: '.$e->getMessage(), [
                     'context' => [
                         'exception_class' => get_class($e),
                         'file' => $e->getFile(),
@@ -54,7 +54,7 @@ class GoogleOAuthHelper
             }
 
             // Jika jenis error tidak terdeteksi
-            Log::critical('Unexpected Google OAuth Error: ' . $e->getMessage(), [
+            Log::critical('Unexpected Google OAuth Error: '.$e->getMessage(), [
                 'context' => [
                     'exception_class' => get_class($e),
                     'file' => $e->getFile(),
@@ -67,7 +67,6 @@ class GoogleOAuthHelper
             throw new \RuntimeException('Unexpected error. Please try again later.');
         }
     }
-
 
     public static function getUserInfo($access_token)
     {
@@ -82,7 +81,7 @@ class GoogleOAuthHelper
 
             if ($statusCode >= 400 && $statusCode < 500) {
                 // Error karena permintaan tidak valid
-                Log::warning('Google User Info Error: ' . $e->getMessage(), [
+                Log::warning('Google User Info Error: '.$e->getMessage(), [
                     'context' => [
                         'exception_class' => get_class($e),
                         'file' => $e->getFile(),
@@ -93,7 +92,7 @@ class GoogleOAuthHelper
                 ]);
             } elseif ($statusCode >= 500) {
                 // Error karena server Google
-                Log::error('Google OAuth Server Error: ' . $e->getMessage(), [
+                Log::error('Google OAuth Server Error: '.$e->getMessage(), [
                     'context' => [
                         'exception_class' => get_class($e),
                         'file' => $e->getFile(),
@@ -107,7 +106,7 @@ class GoogleOAuthHelper
             }
 
             // Jika jenis error tidak terdeteksi
-            Log::critical('Unexpected Google OAuth Error: ' . $e->getMessage(), [
+            Log::critical('Unexpected Google OAuth Error: '.$e->getMessage(), [
                 'context' => [
                     'exception_class' => get_class($e),
                     'file' => $e->getFile(),

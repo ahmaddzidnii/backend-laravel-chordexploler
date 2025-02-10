@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Repositories\UserRepository;
 use App\Traits\ApiResponseHelper;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {

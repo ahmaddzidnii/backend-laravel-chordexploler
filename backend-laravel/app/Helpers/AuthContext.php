@@ -4,8 +4,7 @@ namespace App\Helpers;
 
 /**
  * Class AuthContext
- * 
- * @package App\Helpers
+ *
  * @description Manages authentication context throughout the application lifecycle
  */
 class AuthContext
@@ -23,11 +22,9 @@ class AuthContext
 
     /**
      * Set a user in the auth context
-     * 
-     * 
-     * @param mixed $user The user to set
-     * 
-     * @return void
+     *
+     *
+     * @param  mixed  $user  The user to set
      */
     public function setUser(mixed $user): void
     {
@@ -36,8 +33,6 @@ class AuthContext
 
     /**
      * Get the authenticated user
-     * 
-     * @return mixed
      */
     public function getAuthUser(): mixed
     {
@@ -46,10 +41,9 @@ class AuthContext
 
     /**
      * Get a value from the auth context
-     * 
-     * @param string $key     The key to retrieve
-     * @param mixed  $default The default value if key doesn't exist
-     * 
+     *
+     * @param  string  $key  The key to retrieve
+     * @param  mixed  $default  The default value if key doesn't exist
      * @return mixed The value from the context or the default value
      */
     public function get(string $key, mixed $default = null): mixed
@@ -59,7 +53,7 @@ class AuthContext
 
     /**
      * Get all values from the auth context
-     * 
+     *
      * @return array<string, mixed>
      */
     public function all(): array

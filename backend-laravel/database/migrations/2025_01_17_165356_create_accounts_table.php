@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('expires_at')->nullable();
             $table->timestamps();
 
-            $table->foreignUlid('user_id')->constrained('users', "id")->onDelete('cascade');
+            $table->foreignUlid('user_id')->constrained('users', 'id')->onDelete('cascade');
         });
     }
 
