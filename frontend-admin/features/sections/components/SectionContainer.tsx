@@ -1,14 +1,17 @@
 "use client";
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
-import { SectionItem } from "./SectionItem";
+
 import { cn } from "@/lib/utils";
-import { DataRenderer } from "@/components/DataRenderer";
+import { SectionItem } from "./SectionItem";
 import { useSongId } from "@/hooks/useSongId";
+import { DataRenderer } from "@/components/DataRenderer";
 import { useGetSectionsBySongId } from "../hooks/useGetSections";
 import { useReorderSection } from "../hooks/useReorderSection";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSelectedListSectionStore } from "../store/useSelectedListSectionStore";
+import { EmptyDataFallback } from "@/components/EmptyDataFalback";
 
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   const result = Array.from(list);
@@ -20,14 +23,16 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
 
 export const SectionContainer = () => {
   const songId = useSongId();
-  const { data, isLoading } = useGetSectionsBySongId(songId);
+  const { data, isLoading, isError } = useGetSectionsBySongId(songId);
   const reordeSection = useReorderSection();
   const queryClient = useQueryClient();
+  const { setSections } = useSelectedListSectionStore();
 
   const [orderedData, setOrderedData] = useState(data?.data ?? []);
 
   useEffect(() => {
     if (isLoading) return;
+    setSections(data?.data ?? []);
     setOrderedData(data?.data ?? []);
   }, [data, isLoading]);
 
@@ -82,9 +87,10 @@ export const SectionContainer = () => {
             className={cn("flex flex-col", data?.data.length! > 0 ? "mt-4" : "mt-0")}
           >
             <DataRenderer
-              fallback="No sections"
+              isError={isError}
               isLoading={isLoading}
               data={orderedData}
+              fallback={<EmptyDataFallback />}
               render={(section, index) => {
                 return (
                   <SectionItem

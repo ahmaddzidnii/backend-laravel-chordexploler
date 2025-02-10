@@ -36,7 +36,9 @@ export default async function LoginPage({
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Oauth Error</AlertTitle>
-                <AlertDescription>{`${decodedError.status_code} - ${decodedError.message}`}</AlertDescription>
+                <AlertDescription>{`${decodedError?.status_code ?? ""} - ${
+                  decodedError.message
+                }`}</AlertDescription>
               </Alert>
             )}
 

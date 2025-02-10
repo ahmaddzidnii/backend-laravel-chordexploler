@@ -19,6 +19,7 @@ export function useLoginWithGoogle() {
   const handleCallback = (code: string) => {
     return useQuery({
       queryKey: ["google", "callback"],
+      retry: false,
       queryFn: async () => {
         const response = await axios.get<{
           status_code: number;

@@ -3,7 +3,7 @@ export interface AuthUser {
   name: string;
   email: string;
   avatar: string;
-  role: string;
+  channelId: string;
 }
 
 export interface AuthContextType {

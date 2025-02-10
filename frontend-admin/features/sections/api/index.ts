@@ -44,3 +44,12 @@ export const reorderSections = async (sections: Section["data"]) => {
   });
   return data;
 };
+
+export const deleteSections = async (ids: string[]) => {
+  const { data } = await axiosAuthenticatedInstance.delete("/studio/sections", {
+    data: {
+      ids,
+    },
+  });
+  return data;
+};
