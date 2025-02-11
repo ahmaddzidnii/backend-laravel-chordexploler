@@ -17,6 +17,7 @@ const Page = async ({ searchParams }: PageProps) => {
   const queryClient = getQueryClient();
 
   void queryClient.prefetchQuery(genresQueryOptions);
+  // TODO: prefetch songs query
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
