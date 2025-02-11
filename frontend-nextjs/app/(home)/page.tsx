@@ -1,6 +1,8 @@
-import { HydrationBoundary } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { HomeView } from "@/modules/home/ui/views/HomeView";
+import { getQueryClient } from "@/lib/getQueryClient";
+import { genresQueryOptions } from "@/modules/home/api/genresQueryOptions";
 
 interface PageProps {
   searchParams: Promise<{
@@ -8,11 +10,16 @@ interface PageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 const Page = async ({ searchParams }: PageProps) => {
   const { categoryId } = await searchParams;
-  // TODO: prefetch genres with tanstack query
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(genresQueryOptions);
+
   return (
-    <HydrationBoundary>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <HomeView categoryId={categoryId} />
     </HydrationBoundary>
   );

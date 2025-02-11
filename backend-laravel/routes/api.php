@@ -6,6 +6,8 @@ use App\Http\Controllers\Common\UserController;
 use App\Http\Controllers\Studio\KeyController;
 use App\Http\Controllers\Studio\SectionController;
 use App\Http\Controllers\Studio\SongController;
+use App\Models\Genre;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,18 +26,16 @@ Route::group(['middleware' => 'throttle:api'], function () {
         'prefix' => 'public',
         'as' => 'public.',
     ], function () {
-        // Home/Landing Page Data
-        // Route::get('home', [HomeController::class, 'index'])->name('home');
+        // Key options
+        Route::get('/get-key-options', [KeyController::class, 'getOptions']);
 
-        // Product Catalog
-        Route::group([
-            'prefix' => 'products',
-            'as' => 'products.',
-        ], function () {
-            // Route::get('/', [ProductController::class, 'index'])->name('index');
-            // Route::get('/{product}', [ProductController::class, 'show'])->name('show');
-            // Route::get('/featured', [ProductController::class, 'featured'])->name('featured');
-            // Route::get('/categories/{category}', [ProductController::class, 'byCategory'])->name('by-category');
+        // Genre options
+        Route::get('/get-genre-options', function () {
+            $genres = Genre::all();
+            return response()->json([
+                'code' => Response::HTTP_OK,
+                'data' => $genres
+            ]);
         });
 
         // Categories
@@ -102,9 +102,6 @@ Route::group(['middleware' => 'throttle:api'], function () {
                 Route::patch('/', [SongController::class, 'update']);
                 Route::delete('/', [SongController::class, 'massDestroy']);
             });
-
-            // Key options
-            Route::get('/get-key-options', [KeyController::class, 'getOptions']);
 
             // Sections
             Route::group(['prefix' => 'sections'], function () {
