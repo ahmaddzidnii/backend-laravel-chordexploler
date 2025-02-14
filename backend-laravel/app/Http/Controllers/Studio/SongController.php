@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
+use function Laravel\Prompts\table;
+
 class SongController extends Controller
 {
     use ApiResponseHelper;
@@ -51,7 +53,6 @@ class SongController extends Controller
         $userId = authContext()->getAuthUser()->sub;
 
         $songs = Song::without('sections')->with('keys')->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate($limit);
-
         return $this->successResponse(SongResource::collection($songs->items()), pagination: $this->getPaginationData($songs));
     }
 
@@ -112,7 +113,7 @@ class SongController extends Controller
 
             // Handle image upload
             $file = $validated['cover'];
-            $fileName = uniqid('chxp').'-'.$this->uniqueIdGenerator->generateVideoId().'.'.$file->getClientOriginalExtension();
+            $fileName = uniqid('chxp') . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
 
             // Upload file
             $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
@@ -234,7 +235,7 @@ class SongController extends Controller
             // Handle image upload jika ada gambar baru
             if (isset($validated['cover'])) {
                 $file = $validated['cover'];
-                $fileName = uniqid('chxp').'-'.$this->uniqueIdGenerator->generateVideoId().'.'.$file->getClientOriginalExtension();
+                $fileName = uniqid('chxp') . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
 
                 // Upload file baru ke S3
                 $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
@@ -247,7 +248,7 @@ class SongController extends Controller
 
                 // Hapus gambar lama jika ada
                 if ($oldCover) {
-                    $oldCoverPath = 'images/songs/cover/'.basename($oldCover);
+                    $oldCoverPath = 'images/songs/cover/' . basename($oldCover);
                     Storage::disk('s3')->delete($oldCoverPath);
                 }
 
@@ -287,7 +288,7 @@ class SongController extends Controller
             foreach ($songs as $song) {
                 // Hapus gambar cover jika ada
                 if ($song->cover) {
-                    $coverPath = 'images/songs/cover/'.basename($song->cover);
+                    $coverPath = 'images/songs/cover/' . basename($song->cover);
                     Storage::disk('s3')->delete($coverPath);
                 }
 
@@ -304,5 +305,24 @@ class SongController extends Controller
         }
 
         return $this->successResponse('OK', 200);
+    }
+
+
+
+    public function getRecommendationSongs()
+    {
+
+        // Get recommendations based on your logic
+        $recommendation = Song::orderBy('id')->cursorPaginate(10);
+
+        $paginationCursorObject = [
+            'has_next_page' => $recommendation->hasMorePages(),
+            'has_previous_page' => $recommendation->previousCursor() !== null,
+            'next_cursor' => $recommendation->nextCursor()?->encode(),
+            'previous_cursor' => $recommendation->previousCursor()?->encode(),
+            'count' => $recommendation->count(),
+        ];
+
+        return $this->successResponse($recommendation->items(), pagination: $paginationCursorObject);
     }
 }

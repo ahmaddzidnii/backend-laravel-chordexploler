@@ -22,7 +22,7 @@ class SongFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => '01jk61rkvb48a7rf8kmg108q89',
+            'user_id' => '01jm25dvpw1np6rf919rfr5fzf',
             'title' => $this->faker->sentence(3),
             'artist' => implode(', ', array_map(function () {
                 return $this->faker->name;
@@ -36,17 +36,17 @@ class SongFactory extends Factory
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterCreating(function (Song $song) {
-            $keys = Key::inRandomOrder()->limit(rand(1, 3))->pluck('id')->toArray();
-            $pivotData = [];
+    // public function configure()
+    // {
+    //     return $this->afterCreating(function (Song $song) {
+    //         $keys = Key::inRandomOrder()->limit(rand(1, 3))->pluck('id')->toArray();
+    //         $pivotData = [];
 
-            foreach ($keys as $keyId) {
-                $pivotData[$keyId] = ['id' => Str::uuid()]; // Pakai UUID di pivot
-            }
+    //         foreach ($keys as $keyId) {
+    //             $pivotData[$keyId] = ['id' => Str::uuid()]; // Pakai UUID di pivot
+    //         }
 
-            $song->keys()->attach($pivotData);
-        });
-    }
+    //         $song->keys()->attach($pivotData);
+    //     });
+    // }
 }

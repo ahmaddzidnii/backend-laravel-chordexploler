@@ -10,7 +10,7 @@ interface SongGridCardProps {
 export const SongGridCard = ({ data, onRemove }: SongGridCardProps) => {
   return (
     <div className="flex flex-col gap-2 w-full group ">
-      <Link href={`/songs/${data.id}`}>
+      <Link href={`/play/${data.id}`}>
         <SongThumbnail
           title="q"
           imageUrl="https://placehold.co/400"

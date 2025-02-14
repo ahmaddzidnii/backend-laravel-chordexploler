@@ -11,11 +11,11 @@ interface SongInfoProps {
 
 export const SongInfo = ({ data, onRemove }: SongInfoProps) => {
   const compactViews = useMemo(() => {
-    return new Intl.NumberFormat("en-US", { notation: "compact" }).format(data.views);
+    return new Intl.NumberFormat("en-US", { notation: "compact" }).format(Math.random() * 10000000);
   }, [data.views]);
 
   const compactDate = useMemo(() => {
-    return formatDateToRelative(data.createdAt);
+    return formatDateToRelative(data.created_at);
   }, [data.createdAt]);
 
   return (
@@ -28,7 +28,7 @@ export const SongInfo = ({ data, onRemove }: SongInfoProps) => {
         </Avatar>
       </Link>
       <div className="min-w-0 flex-1">
-        <Link href={`/songs/${data.id}`}>
+        <Link href={`/play/${data.id}`}>
           <h3 className="font-medium line-clamp-1 lg:line-clamp-2 text-base break-words">
             {data.title}
           </h3>
@@ -39,7 +39,7 @@ export const SongInfo = ({ data, onRemove }: SongInfoProps) => {
             A Mayor, B Mayor
           </p>
         </Link>
-        <Link href={`/songs/${data.id}`}>
+        <Link href={`/play/${data.id}`}>
           <p className="text-sm line-clamp-1">
             {compactViews} views • {compactDate}
           </p>

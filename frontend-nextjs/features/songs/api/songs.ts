@@ -100,7 +100,7 @@ export const getKeyOptions = async () => {
       key: string;
       family: string[];
     }[];
-  }>("/studio/get-key-options");
+  }>("/public/get-key-options");
   return response.data;
 };
 

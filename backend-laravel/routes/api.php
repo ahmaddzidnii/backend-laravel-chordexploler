@@ -38,6 +38,8 @@ Route::group(['middleware' => 'throttle:api'], function () {
             ]);
         });
 
+        Route::get('/recommendations', [SongController::class, 'getRecommendationSongs']);
+
         // Categories
         Route::group([
             'prefix' => 'categories',

@@ -46,7 +46,7 @@ const CallbackPage = ({
       window.location.href = redirectPath;
     } else {
       window.location.href =
-        process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/dashboard";
+        process.env.NEXT_PUBLIC_REDIRECT_PATH_IF_USER_IS_AUTHENTICATED ?? "/studio/dashboard";
     }
   }),
     [isLoading, isError];

@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\Song;
+
 trait ApiResponseHelper
 {
     public function successResponse($data, $code = 200, $pagination = null)
@@ -31,6 +33,7 @@ trait ApiResponseHelper
 
     protected function getPaginationData($paginator)
     {
+
         return [
             'last_visible_page' => $paginator->lastPage(),
             'has_next_page' => $paginator->hasMorePages(),

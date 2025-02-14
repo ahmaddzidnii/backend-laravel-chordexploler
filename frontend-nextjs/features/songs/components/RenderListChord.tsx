@@ -302,7 +302,7 @@ const RenderListChord = () => {
               </div>
 
               <Link
-                href={`/songs/${itemId}`}
+                href={`/studio/songs/${itemId}`}
                 className="flex-1 pointer-events-none"
               >
                 {/* Mobile View */}

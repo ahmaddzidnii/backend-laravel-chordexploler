@@ -1,38 +1,47 @@
 "use client";
 import React, { useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { SidebarItem } from "./SidebarItem";
 import { CiSettings } from "react-icons/ci";
 import { MdDashboard } from "react-icons/md";
 import { RiMusicAiLine } from "react-icons/ri";
 import { RiFeedbackFill } from "react-icons/ri";
 import { IoMdPeople } from "react-icons/io";
 import { FaComment } from "react-icons/fa";
+import { usePathname } from "next/navigation";
 import { SiGoogleanalytics } from "react-icons/si";
-
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useSidebarStore } from "@/store/useSidebarStore";
-import { usePathname } from "next/navigation";
 import { AuthUser } from "@/types";
+import { useSidebarStore } from "@/store/useSidebarStore";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { SidebarItem } from "./SidebarItem";
 
 const sidebars = {
   MID_SECTION: [
-    { title: "Dashboard", icon: MdDashboard, href: "/dashboard", rootName: "dashboard" },
+    { title: "Dashboard", icon: MdDashboard, href: "/studio/dashboard", rootName: "dashboard" },
     {
       title: "Songs",
       icon: RiMusicAiLine,
-      href: "/songs?type=all&page=1&limit=50",
+      href: "/studio/songs?type=all&page=1&limit=50",
       rootName: "songs",
     },
-    { title: "Analytics", icon: SiGoogleanalytics, href: "/analytics", rootName: "analytics" },
-    { title: "Comments", icon: FaComment, href: "/comments", rootName: "comments" },
-    { title: "Subscribers", icon: IoMdPeople, href: "/subscriber", rootName: "subscriber" },
+    {
+      title: "Analytics",
+      icon: SiGoogleanalytics,
+      href: "/studio/analytics",
+      rootName: "analytics",
+    },
+    { title: "Comments", icon: FaComment, href: "/studio/comments", rootName: "comments" },
+    {
+      title: "Subscribers",
+      icon: IoMdPeople,
+      href: "/studio/subscribers",
+      rootName: "subscribers",
+    },
   ],
   BOTTOM_SECTION: [
-    { title: "Settings", icon: CiSettings, href: "/settings", rootName: "settings" },
-    { title: "Feedback", icon: RiFeedbackFill, href: "/settings", rootName: "feedback" },
+    { title: "Settings", icon: CiSettings, href: "/studio/settings", rootName: "settings" },
+    { title: "Feedback", icon: RiFeedbackFill, href: "/studio/feedback", rootName: "feedback" },
   ],
 };
 
