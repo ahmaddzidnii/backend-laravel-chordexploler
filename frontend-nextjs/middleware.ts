@@ -4,8 +4,9 @@ import { createRouteMatcher } from "./helpers/createRouteMatcher";
 import { decodeBase64, encodeBase64 } from "./helpers/base64";
 
 export default authMiddleware(async (auth, req) => {
-  const isPublicRoutes = createRouteMatcher(["/", "/auth(.*)", "/api/auth(.*)"]);
+  // const isPublicRoutes = createRouteMatcher(["/",  "/auth(.*)", "/api/auth(.*)"]);
   const isAuthRoutes = createRouteMatcher(["/auth(.*)"]);
+  const isPrivateRoutes = createRouteMatcher(["/studio(.*)"]);
 
   if (req.nextUrl.pathname === "/") {
     // return NextResponse.redirect(
@@ -22,7 +23,7 @@ export default authMiddleware(async (auth, req) => {
   const decodedState = state ? decodeBase64(state) : null;
 
   // Handle state parameter for unauthenticated users
-  if (!auth.isAuthenticated && !isPublicRoutes(req)) {
+  if (!auth.isAuthenticated && isPrivateRoutes(req)) {
     const loginUrl = new URL(process.env.NEXT_PUBLIC_PATH_LOGIN_PAGE ?? "/auth/login", req.nextUrl);
 
     // Add the current URL as encoded state if none is provided

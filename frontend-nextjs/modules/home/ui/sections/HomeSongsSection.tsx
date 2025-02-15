@@ -57,7 +57,7 @@ const HomeSongsSectionSuspense = ({ categoryId }: HomeSongsSectionProps) => {
         ))}
       </div>
       <InfiniteScroll
-        isManual={true}
+        isManual={false}
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
