@@ -61,6 +61,18 @@ body {
       linear-gradient(to bottom, #334155 1px, transparent 1px);
   }
 
+  .is-mobile {
+    @apply md:hidden;
+  }
+
+  .is-desktop {
+    @apply hidden md:block;
+  }
+
+  .is-focus {
+    @apply bg-muted/50;
+  }
+
   @media (min-width: 1920px) {
     .margin-container {
       padding-left: 0px;

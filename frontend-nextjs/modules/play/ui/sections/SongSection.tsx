@@ -1,7 +1,8 @@
 import { Suspense } from "react";
-import { ChordCanvas } from "../components/ChordCanvas";
 import { ErrorBoundary } from "react-error-boundary";
-import { SongInfo } from "../components/SongInfoSection";
+
+import { ChordSection } from "../components/ChordSection";
+import { SongInfo } from "../components/SongInfo";
 
 interface SongSectionProps {
   songId: string;
@@ -21,7 +22,7 @@ export const SongSection = ({ songId }: SongSectionProps) => {
 const SongSectionSuspense = ({ songId }: SongSectionProps) => {
   return (
     <div className="flex gap-4 flex-col lg:flex-row px-2">
-      <ChordCanvas song={{}} />
+      <ChordSection song={{}} />
       <SongInfo song={{}} />
     </div>
   );

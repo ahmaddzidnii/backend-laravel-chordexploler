@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import ModalProvider from "@/providers/ModalProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -48,7 +49,9 @@ export default function RootLayout({
                 <Toaster />
                 <NextTopLoader showSpinner={false} />
                 <ModalProvider />
-                <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
+                <TooltipProvider>
+                  <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
+                </TooltipProvider>
               </AuthContextProvider>
             </ThemeProvider>
           </GoogleOAuthProvider>
