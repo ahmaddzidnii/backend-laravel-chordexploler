@@ -111,3 +111,14 @@ export const getSongById = async (id: string) => {
   );
   return response.data;
 };
+
+export const getGenreOptions = async () => {
+  const response = await axiosAuthenticatedInstance.get<{
+    code: number;
+    data: {
+      id: string;
+      name: string;
+    }[];
+  }>(`/public/get-genre-options`);
+  return response.data;
+};

@@ -5,21 +5,22 @@ import { ChordSection } from "../components/ChordSection";
 import { SongInfo } from "../components/SongInfo";
 
 interface SongSectionProps {
-  songId: string;
+  slug: string;
 }
 
-export const SongSection = ({ songId }: SongSectionProps) => {
+export const SongSection = ({ slug }: SongSectionProps) => {
   // TODO: Access cache get one song
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ErrorBoundary fallback={<div>Failed to load song</div>}>
-        <SongSectionSuspense songId={songId} />
+        <SongSectionSuspense slug={slug} />
       </ErrorBoundary>
     </Suspense>
   );
 };
 
-const SongSectionSuspense = ({ songId }: SongSectionProps) => {
+const SongSectionSuspense = ({ slug }: SongSectionProps) => {
+  // TODO: Use Suspense to fetch song
   return (
     <div className="flex gap-4 flex-col lg:flex-row px-2">
       <ChordSection song={{}} />

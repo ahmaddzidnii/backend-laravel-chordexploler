@@ -8,16 +8,10 @@ interface SongGridCardProps {
   onRemove?: () => void;
 }
 
-const getHrefUrl = (songId: string) => {
-  const url = new URL("/play", window.location.origin);
-  url.searchParams.set("songId", songId);
-  return url.toString();
-};
-
 export const SongGridCard = ({ data, onRemove }: SongGridCardProps) => {
   return (
     <div className="flex flex-col gap-2 w-full group ">
-      <Link href={getHrefUrl(data.id)}>
+      <Link href={`/play/${data.slug}`}>
         <SongThumbnail
           title="q"
           imageUrl="https://placehold.co/400"

@@ -19,11 +19,11 @@ return new class extends Migration
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->string('slug')->unique();
             $table->string('cover')->nullable();
-            $table->string('genre')->nullable();
             $table->string('youtube_url')->nullable();
             $table->integer('released_year')->nullable();
             $table->string('publisher')->nullable();
             $table->string('bpm')->nullable();
+            $table->unsignedBigInteger('views')->default(0);
             $table->timestamps();
 
             $table->foreignUlid('user_id')->nullable()->constrained('users', 'id')->onDelete('cascade');

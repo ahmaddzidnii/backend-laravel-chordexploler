@@ -10,4 +10,9 @@ class Genre extends Model
     use HasUlids;
 
     protected $fillable = ['name'];
+
+    public function songs()
+    {
+        return $this->belongsToMany(Genre::class, 'song_genres')->using(SongGenre::class);
+    }
 }

@@ -1,14 +1,18 @@
 <?php
 
-use App\Http\Controllers\Auth\Oauth\GoogleController;
-use App\Http\Controllers\Auth\TokenController;
-use App\Http\Controllers\Common\UserController;
-use App\Http\Controllers\Studio\KeyController;
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Studio\SectionController;
 use App\Http\Controllers\Studio\SongController;
-use App\Models\Genre;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Auth\Oauth\GoogleController;
+use App\Http\Controllers\Auth\TokenController;
+
+use App\Http\Controllers\UserController;
+
+use App\Http\Controllers\Core\GenreController;
+use App\Http\Controllers\Core\KeyController;
+use App\Http\Controllers\Core\RecommendationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +22,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'throttle:api'], function () {
     /*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Public Routes
+    |--------------------------------------------------------------------------
+    */
     Route::group([
         'prefix' => 'public',
         'as' => 'public.',
@@ -30,25 +34,13 @@ Route::group(['middleware' => 'throttle:api'], function () {
         Route::get('/get-key-options', [KeyController::class, 'getOptions']);
 
         // Genre options
-        Route::get('/get-genre-options', function () {
-            $genres = Genre::all();
-            return response()->json([
-                'code' => Response::HTTP_OK,
-                'data' => $genres
-            ]);
-        });
+        Route::get('/get-genre-options', [GenreController::class, 'index']);
 
-        Route::get('/recommendations', [SongController::class, 'getRecommendationSongs']);
-
-        // Categories
-        Route::group([
-            'prefix' => 'categories',
-            'as' => 'categories.',
-        ], function () {
-            // Route::get('/', [CategoryController::class, 'index'])->name('index');
-            // Route::get('/{category}', [CategoryController::class, 'show'])->name('show');
-        });
+        // Recommendations
+        Route::get('/recommendations', [RecommendationController::class, 'index']);
     });
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -66,7 +58,6 @@ Route::group(['middleware' => 'throttle:api'], function () {
         ], function () {
             Route::get('google/callback', [GoogleController::class, 'callback'])->name('google.callback');
             // Mudah menambahkan provider OAuth lain
-            // Route::get('facebook/callback', [FacebookAuthController::class, 'callback'])->name('facebook.callback');
         });
 
         // Credentials Login

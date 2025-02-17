@@ -28,7 +28,7 @@ export const SongInfo = ({ data, onRemove }: SongInfoProps) => {
         </Avatar>
       </Link>
       <div className="min-w-0 flex-1">
-        <Link href={`/play/${data.id}`}>
+        <Link href={`/play/${data.slug}`}>
           <h3 className="font-medium line-clamp-1 lg:line-clamp-2 text-base break-words">
             {data.title}
           </h3>
@@ -39,7 +39,7 @@ export const SongInfo = ({ data, onRemove }: SongInfoProps) => {
             A Mayor, B Mayor
           </p>
         </Link>
-        <Link href={`/play/${data.id}`}>
+        <Link href={`/play/${data.slug}`}>
           <p className="text-sm line-clamp-1">
             {compactViews} views • {compactDate}
           </p>

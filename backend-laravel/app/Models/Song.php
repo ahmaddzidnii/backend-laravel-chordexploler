@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
 
 class Song extends Model
 {
@@ -25,23 +24,17 @@ class Song extends Model
         'slug',
         'cover',
         'status',
-        'genre',
         'youtube_url',
         'released_year',
         'publisher',
         'bpm',
         'title_lower',
+        'views',
     ];
 
     protected static function boot()
     {
         parent::boot();
-
-        // static::creating(function ($model) {
-        //     if (empty($model->id)) {
-        //         $model->id = (string) Str::uuid();
-        //     }
-        // });
     }
 
     public function setTitleAttribute($value)
@@ -71,5 +64,10 @@ class Song extends Model
     public function keys()
     {
         return $this->belongsToMany(Key::class, 'songs_keys')->using(SongKey::class);
+    }
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'song_genres')->using(SongGenre::class);
     }
 }

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Loader2Icon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -13,7 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
+
 import { useGetKeyOptions } from "../hooks/useGetKeyOptions";
+import { useGetGenreOptions } from "../hooks/useGetGenreOptions";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -33,7 +36,7 @@ export const formCreateSongSchema = z.object({
     }
   ),
   youtube_url: z.string().url(),
-  genre: z.string().nonempty("Genre is required"),
+  genre: z.array(z.string()).nonempty("Genre is required"),
   released_year: z
     .string()
     .nonempty("Released year is required")
@@ -50,6 +53,7 @@ interface CreateSongFormProps {
 const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
   const [selectedImageURL, setSelectedImageURL] = useState<string | null>(null);
   const keyOptions = useGetKeyOptions();
+  const genreOptions = useGetGenreOptions();
 
   const form = useForm<z.infer<typeof formCreateSongSchema>>({
     resolver: zodResolver(formCreateSongSchema),
@@ -60,7 +64,7 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
       key: [],
       cover: undefined,
       youtube_url: "",
-      genre: "",
+      genre: [],
       released_year: "",
       publisher: "",
       bpm: "",
@@ -71,8 +75,12 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
     onFormSubmit && onFormSubmit(values);
   }
 
-  if (keyOptions.isLoading) {
-    return <div>Loading...</div>;
+  if (keyOptions.isLoading || genreOptions.isLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Loader2Icon className="w-8 h-8 animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -160,7 +168,6 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
         />
 
         {/* Cover Image with Type Validation */}
-
         <FormField
           control={form.control}
           name="cover"
@@ -222,13 +229,33 @@ const CreateSongForm = ({ formRef, onFormSubmit }: CreateSongFormProps) => {
         <FormField
           control={form.control}
           name="genre"
-          render={({ field }) => (
+          render={({ field: { onChange, ...rest } }) => (
             <FormItem>
               <FormLabel>Genre</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter Genre"
-                  {...field}
+                <MultiSelect
+                  {...rest}
+                  options={
+                    genreOptions.data
+                      ? genreOptions.data.data.map((key) => {
+                          return {
+                            label: key.name,
+                            value: key.id,
+                          };
+                        })
+                      : [
+                          {
+                            label: "C",
+                            value: "C",
+                          },
+                        ]
+                  }
+                  onValueChange={(selectedGenre) => onChange(selectedGenre)}
+                  placeholder="Select Genre"
+                  variant="inverted"
+                  animation={0}
+                  maxCount={5}
+                  modalPopover
                 />
               </FormControl>
               <FormDescription>Provide the genre's name.</FormDescription>

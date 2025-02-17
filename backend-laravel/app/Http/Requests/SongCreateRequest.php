@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class SongRequest extends FormRequest
+class SongCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class SongRequest extends FormRequest
             'key' => ['required'],
             'status' => ['required', Rule::in(['draft', 'published'])],
             'cover' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5072'],
-            'genre' => ['required', 'string'],
+            'genre' => ['required'],
             'youtube_url' => ['required', 'string', 'url'],
             'released_year' => ['required', 'numeric'],
             'publisher' => ['required', 'string'],

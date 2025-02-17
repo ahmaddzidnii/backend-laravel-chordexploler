@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Studio;
 
 use App\Helpers\UniqueIdGenerator;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SongRequest;
+use App\Http\Requests\SongCreateRequest;
 use App\Http\Requests\SongUpdateRequest;
 use App\Http\Resources\Studio\SongResource;
 use App\Models\Song;
@@ -15,13 +15,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-use function Laravel\Prompts\table;
-
 class SongController extends Controller
 {
     use ApiResponseHelper;
 
-    public function __construct(protected UniqueIdGenerator $uniqueIdGenerator) {}
+    public function __construct() {}
 
     private function generateSlug($artist, $title)
     {
@@ -33,16 +31,11 @@ class SongController extends Controller
         $formattedArtist = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $formattedArtist), '-'));
         $formattedTitle = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
 
-        // Tambahkan huruf unik
-        $uniqueString = $this->uniqueIdGenerator->generateVideoId();
-
+        $randomString = uniqid('chxp');
         // Gabungkan menjadi slug
-        return "{$formattedArtist}-{$formattedTitle}-{$uniqueString}";
+        return "{$formattedArtist}-{$formattedTitle}-{$randomString}";
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
 
@@ -52,14 +45,11 @@ class SongController extends Controller
 
         $userId = authContext()->getAuthUser()->sub;
 
-        $songs = Song::without('sections')->with('keys')->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate($limit);
+        $songs = Song::without('sections')->with(['keys', 'genres'])->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate($limit);
         return $this->successResponse(SongResource::collection($songs->items()), pagination: $this->getPaginationData($songs));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(SongRequest $request)
+    public function store(SongCreateRequest $request)
     {
 
         $validated = $request->validated();
@@ -69,7 +59,6 @@ class SongController extends Controller
         $slug = $this->generateSlug($validated['artist'], $validated['title']);
 
         // save to database and connect to user
-
         try {
             DB::beginTransaction();
             $song = Song::create([
@@ -77,7 +66,6 @@ class SongController extends Controller
                 'artist' => $validated['artist'],
                 'status' => $validated['status'],
                 'cover' => null,
-                'genre' => $validated['genre'],
                 'youtube_url' => $validated['youtube_url'],
                 'released_year' => $validated['released_year'],
                 'publisher' => $validated['publisher'],
@@ -85,8 +73,6 @@ class SongController extends Controller
                 'slug' => $slug,
                 'user_id' => $userId,
             ]);
-
-            // Connect key to song
 
             // Pastikan 'key' ada dan tidak kosong sebelum json_decode()
             $keys = isset($validated['key']) && ! empty($validated['key'])
@@ -109,11 +95,36 @@ class SongController extends Controller
                 throw ValidationException::withMessages(['key' => 'One or more key IDs are invalid.']);
             }
 
+            // Prepare pivot data with verified keys only
             $song->keys()->attach($keys);
+
+            // Verify that all genre_ids exist in the genres table first
+            $genres = isset($validated['genre']) && ! empty($validated['genre'])
+                ? json_decode($validated['genre'], true)
+                : [];
+
+            // Pastikan hasil json_decode adalah array
+            if (! is_array($genres)) {
+                $genres = [];
+            }
+
+            // Verify that all genre_ids exist in the genres table first
+            $existingGenres = DB::table('genres')
+                ->whereIn('id', $genres)
+                ->pluck('id')
+                ->toArray();
+
+            if (count($existingGenres) !== count($genres)) {
+                DB::rollBack();
+                throw ValidationException::withMessages(['genre' => 'One or more genre IDs are invalid.']);
+            }
+
+            // Prepare pivot data with verified genres only
+            $song->genres()->attach($genres);
 
             // Handle image upload
             $file = $validated['cover'];
-            $fileName = uniqid('chxp') . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
+            $fileName = uniqid('chxp') . '-' . $userId . '.' . $file->getClientOriginalExtension();
 
             // Upload file
             $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
@@ -140,15 +151,12 @@ class SongController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
 
         $userId = authContext()->getAuthUser()->sub;
 
-        $song = Song::where('id', $id)->where('id', $id)->with(['sections', 'keys'])->first();
+        $song = Song::where('id', $id)->where('id', $id)->with(['sections', 'keys', 'genres'])->first();
 
         if (! $song) {
             return $this->errorResponse('Song not found.', 404);
@@ -161,9 +169,6 @@ class SongController extends Controller
         return $this->successResponse(new SongResource($song));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(SongUpdateRequest $request, string $id)
     {
         $validated = $request->validated();
@@ -232,10 +237,38 @@ class SongController extends Controller
                 }
             }
 
+            // Update relasi genre jika ada
+            if (isset($validated['genre'])) {
+                $genres = is_string($validated['genre'])
+                    ? json_decode($validated['genre'], true)
+                    : $validated['genre'];
+
+                if (is_array($genres)) {
+                    // Verify that all genre_ids exist in the genres table first
+                    $existingGenres = DB::table('genres')
+                        ->whereIn('id', $genres)
+                        ->pluck('id')
+                        ->toArray();
+
+                    if (count($existingGenres) !== count($genres)) {
+                        DB::rollBack();
+                        throw ValidationException::withMessages(['genre' => 'One or more genre IDs are invalid.']);
+                    }
+
+                    // Prepare pivot data with verified genres only
+                    $pivotData = [];
+                    foreach ($existingGenres as $genreId) {
+                        $pivotData[$genreId] = ['id' => Str::uuid()];
+                    }
+
+                    $song->genres()->sync($pivotData);
+                }
+            }
+
             // Handle image upload jika ada gambar baru
             if (isset($validated['cover'])) {
                 $file = $validated['cover'];
-                $fileName = uniqid('chxp') . '-' . $this->uniqueIdGenerator->generateVideoId() . '.' . $file->getClientOriginalExtension();
+                $fileName = uniqid('chxp') . '-' . $userId . '.' . $file->getClientOriginalExtension();
 
                 // Upload file baru ke S3
                 $path = Storage::disk('s3')->putFileAs('images/songs/cover', $file, $fileName, ['visibility' => 'public']);
@@ -266,9 +299,6 @@ class SongController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function massDestroy(Request $request)
     {
         $validated = $request->validate([
@@ -295,6 +325,9 @@ class SongController extends Controller
                 // Hapus key
                 $song->keys()->detach();
 
+                // Hapus genre
+                $song->genres()->detach();
+
                 // Hapus lagu
                 $song->delete();
             }
@@ -305,24 +338,5 @@ class SongController extends Controller
         }
 
         return $this->successResponse('OK', 200);
-    }
-
-
-
-    public function getRecommendationSongs()
-    {
-
-        // Get recommendations based on your logic
-        $recommendation = Song::orderBy('id')->cursorPaginate(10);
-
-        $paginationCursorObject = [
-            'has_next_page' => $recommendation->hasMorePages(),
-            'has_previous_page' => $recommendation->previousCursor() !== null,
-            'next_cursor' => $recommendation->nextCursor()?->encode(),
-            'previous_cursor' => $recommendation->previousCursor()?->encode(),
-            'count' => $recommendation->count(),
-        ];
-
-        return $this->successResponse($recommendation->items(), pagination: $paginationCursorObject);
     }
 }

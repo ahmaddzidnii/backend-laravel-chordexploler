@@ -1,13 +1,13 @@
 import { SongSection } from "../sections/SongSection";
 
 interface PlayViewProps {
-  songId: string;
+  slug: string;
 }
 
-export const PlayView = ({ songId }: PlayViewProps) => {
+export const PlayView = ({ slug }: PlayViewProps) => {
   return (
     <>
-      <SongSection songId={songId} />
+      <SongSection slug={slug} />
     </>
   );
 };
