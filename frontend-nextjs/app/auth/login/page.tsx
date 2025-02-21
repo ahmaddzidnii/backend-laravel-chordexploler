@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 import { Card } from "@/components/ui/card";
-import LoginForm from "@/features/auth/components/LoginForm";
-import SocialLoginComponent from "@/features/auth/components/SocialLoginComponent";
+import LoginForm from "@/modules/auth/ui/forms/LoginForm";
+import SocialLoginComponent from "@/modules/auth/ui/components/SocialLoginComponent";
 import { Suspense } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";

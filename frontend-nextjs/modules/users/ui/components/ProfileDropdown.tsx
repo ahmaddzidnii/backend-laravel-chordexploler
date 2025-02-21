@@ -13,8 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLogout } from "../hooks/useLogout";
-import { useUser } from "../../../modules/auth/hooks/useUser";
+import { useLogout } from "@/modules/auth/hooks/useLogout";
+import { useUser } from "@/modules/auth/hooks/useUser";
 
 export default function ProfileDropdown({ children }: React.PropsWithChildren<{}>) {
   const { logout } = useLogout();

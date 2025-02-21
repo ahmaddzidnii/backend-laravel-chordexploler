@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
 import { Input } from "./ui/input";
-import ProfileDropdown from "@/features/auth/components/ProfileDropdown";
+import ProfileDropdown from "@/modules/users/ui/components/ProfileDropdown";
 import ApplicationLogo from "./Logo";
 import AddEntityDropdown from "./AddEntityDropdown";
 import { MenuSidebarButton } from "./MenuSidebarButton";

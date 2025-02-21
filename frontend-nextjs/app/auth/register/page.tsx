@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 import { Card } from "@/components/ui/card";
-import RegisterForm from "@/features/auth/components/RegisterForm";
-import SocialLoginComponent from "@/features/auth/components/SocialLoginComponent";
+import RegisterForm from "@/modules/auth/ui/forms/RegisterForm";
+import SocialLoginComponent from "@/modules/auth/ui/components/SocialLoginComponent";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {

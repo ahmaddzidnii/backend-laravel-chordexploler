@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { useLoginWithGoogle } from "@/features/auth/hooks/useLoginWithGoogle";
+import { useLoginWithGoogle } from "@/modules/auth/hooks/useLoginWithGoogle";
 import { useSearchParams } from "next/navigation";
 
 const SocialLoginComponent = () => {

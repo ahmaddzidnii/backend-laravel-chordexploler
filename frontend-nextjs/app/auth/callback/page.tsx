@@ -3,7 +3,7 @@
 import { use, useEffect } from "react";
 import { Loader2Icon } from "lucide-react";
 
-import { useLoginWithGoogle } from "@/features/auth/hooks/useLoginWithGoogle";
+import { useLoginWithGoogle } from "@/modules/auth/hooks/useLoginWithGoogle";
 
 const CallbackPage = ({
   searchParams,
