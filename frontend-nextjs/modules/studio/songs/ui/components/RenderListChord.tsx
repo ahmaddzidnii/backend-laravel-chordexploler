@@ -10,13 +10,13 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { cn } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getSongs } from "@/features/songs/api/songs";
+import { getSongs } from "@/modules/studio/songs/api";
 import { DataRenderer } from "@/components/DataRenderer";
 import { formatDateToDDMMYYYY, formatDateToRelative } from "@/utils/formatDate";
 import { useQueryString } from "@/hooks/useQueryString";
 import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/hooks/useConfirm";
-import { useRemoveSong } from "../hooks/useRemoveSong";
+import { useRemoveSong } from "../../hooks/useRemoveSong";
 import { Loader2Icon } from "lucide-react";
 
 const EmptyFallback = () => {

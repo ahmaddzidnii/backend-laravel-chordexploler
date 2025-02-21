@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
-import EditSongPage from "@/features/songs/pages/EditSongPage";
+import EditSongPage from "@/modules/studio/songs/ui/views/EditSongPage";
 
 // export const metadata: Metadata = {
 //   title: "Edit Song",

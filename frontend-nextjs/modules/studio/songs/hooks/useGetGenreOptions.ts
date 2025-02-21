@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getGenreOptions } from "../api/songs";
+import { getGenreOptions } from "../api";
 
 export const useGetGenreOptions = () => {
   return useQuery({

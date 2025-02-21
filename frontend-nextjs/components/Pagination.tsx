@@ -14,7 +14,7 @@ import {
   MdSkipPrevious,
 } from "react-icons/md";
 
-import { Pagination as PaginationType } from "@/features/songs/api/songs";
+import { Pagination as PaginationType } from "@/modules/studio/songs/api";
 import { IconType } from "react-icons/lib";
 import { cn } from "@/lib/utils";
 

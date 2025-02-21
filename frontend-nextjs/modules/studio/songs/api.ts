@@ -1,5 +1,5 @@
 import { axiosAuthenticatedInstance } from "@/lib/axiosAuthenticatedInstance";
-import { SogInfoResponseType } from "../types";
+import { SogInfoResponseType } from "./types";
 
 export interface Pagination {
   last_visible_page: number;

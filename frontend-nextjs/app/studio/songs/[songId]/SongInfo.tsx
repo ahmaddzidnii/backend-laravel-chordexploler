@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { DataRenderer } from "@/components/DataRenderer";
-import { useGetSongById } from "@/features/songs/hooks/useGetSongById";
+import { useGetSongById } from "@/modules/studio/songs/hooks/useGetSongById";
 import { ReactPlayerComponent } from "@/modules/videos/ui/components/ReactPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

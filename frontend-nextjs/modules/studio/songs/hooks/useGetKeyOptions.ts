@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getKeyOptions } from "../api/songs";
+import { getKeyOptions } from "../api";
 
 export const useGetKeyOptions = () => {
   return useQuery({

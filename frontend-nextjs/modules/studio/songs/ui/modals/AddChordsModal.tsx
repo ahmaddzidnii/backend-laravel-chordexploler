@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import CreateSongForm, { formCreateSongSchema } from "../components/CreateSongForm";
-import { useCreateSong } from "../hooks/useCreateSong";
+import { useCreateSong } from "../../hooks/useCreateSong";
 
 const AddChordsModal = () => {
   const { isOpen, close } = useAddChordModal();

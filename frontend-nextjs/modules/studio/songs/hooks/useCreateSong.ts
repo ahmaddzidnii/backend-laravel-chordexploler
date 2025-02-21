@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { createSong } from "../api/songs";
+import { createSong } from "../api";
 import { z } from "zod";
-import { formCreateSongSchema } from "../components/CreateSongForm";
+import { formCreateSongSchema } from "../ui/components/CreateSongForm";
 
 export const useCreateSong = () => {
   return useMutation({

@@ -15,8 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 
-import { useGetKeyOptions } from "../hooks/useGetKeyOptions";
-import { useGetGenreOptions } from "../hooks/useGetGenreOptions";
+import { useGetKeyOptions } from "../../hooks/useGetKeyOptions";
+import { useGetGenreOptions } from "../../hooks/useGetGenreOptions";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 

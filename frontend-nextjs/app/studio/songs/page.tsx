@@ -1,4 +1,4 @@
-import RenderListChord from "@/features/songs/components/RenderListChord";
+import RenderListChord from "@/modules/studio/songs/ui/components/RenderListChord";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
