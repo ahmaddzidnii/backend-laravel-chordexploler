@@ -2,38 +2,25 @@ import { z } from "zod";
 import { useRef } from "react";
 import { create } from "zustand";
 import { XIcon } from "lucide-react";
-import { toast } from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
-import CreateSongForm, { formCreateSongSchema } from "../components/CreateSongForm";
+
 import { useCreateSong } from "../../hooks/useCreateSong";
+import CreateSongForm, { formCreateSongSchema } from "../components/CreateSongForm";
 
 const AddChordsModal = () => {
   const { isOpen, close } = useAddChordModal();
   const formRef = useRef<HTMLFormElement>(null);
 
   const songsMutation = useCreateSong();
-  const queryClient = useQueryClient();
 
   const handleFormSubmit = (val: z.infer<typeof formCreateSongSchema>) => {
-    toast.promise(
-      songsMutation.mutateAsync(val, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["songs"] });
-          close();
-        },
-        onError: (error) => {
-          console.error(error);
-        },
-      }),
-      {
-        loading: "Creating song...",
-        success: (data: any) => `Song "${data.title}" created successfully`,
-        error: "Failed to create song",
-      }
-    );
+    songsMutation.mutate(val, {
+      onSuccess: () => {
+        close();
+      },
+    });
   };
 
   return (

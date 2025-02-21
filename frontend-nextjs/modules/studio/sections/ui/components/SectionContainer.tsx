@@ -1,7 +1,6 @@
 "use client";
-import toast from "react-hot-toast";
+
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 
 import { cn } from "@/lib/utils";
@@ -26,7 +25,6 @@ export const SectionContainer = () => {
   const songId = useSongId();
   const { data, isLoading, isError } = useGetSectionsBySongId(songId);
   const reordeSection = useReorderSection();
-  const queryClient = useQueryClient();
   const { setSections } = useSelectedListSectionStore();
 
   const [orderedData, setOrderedData] = useState(data?.data ?? []);
@@ -57,20 +55,7 @@ export const SectionContainer = () => {
       }));
 
       setOrderedData(items);
-      toast.promise(
-        reordeSection.mutateAsync(items, {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["sections", songId],
-            });
-          },
-        }),
-        {
-          loading: "Reordering sections",
-          success: "Sections reordered successfully",
-          error: "Failed to reorder sections",
-        }
-      );
+      reordeSection.mutate(items);
     }
   };
 

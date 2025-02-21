@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Toaster } from "react-hot-toast";
-import { TanstackProvider } from "@/providers/TanstackProvider";
-import { AuthContextProvider } from "@/modules/auth/context/useAuthContext";
-import "./globals.css";
-import { cn } from "@/lib/utils";
+import { Bounce, ToastContainer } from "react-toastify";
 
-import { ThemeProvider } from "@/providers/ThemeProvider";
+import { cn } from "@/lib/utils";
 import ModalProvider from "@/providers/ModalProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { TanstackProvider } from "@/providers/TanstackProvider";
+import { AuthContextProvider } from "@/modules/auth/context/useAuthContext";
+
+import "./globals.css";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -40,22 +40,32 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <TanstackProvider>
-          <GoogleOAuthProvider clientId="941907082804-4j59igvjeps6fgagur3m47okvngr28lu.apps.googleusercontent.com">
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              disableTransitionOnChange
-            >
-              <AuthContextProvider>
-                <Toaster />
-                <NextTopLoader showSpinner={false} />
-                <ModalProvider />
-                <TooltipProvider>
-                  <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
-                </TooltipProvider>
-              </AuthContextProvider>
-            </ThemeProvider>
-          </GoogleOAuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
+            <AuthContextProvider>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover={false}
+                theme="light"
+                transition={Bounce}
+              />
+              <NextTopLoader showSpinner={false} />
+              <ModalProvider />
+              <TooltipProvider>
+                <div className="max-w-screen-2xl mx-auto margin-container">{children}</div>
+              </TooltipProvider>
+            </AuthContextProvider>
+          </ThemeProvider>
         </TanstackProvider>
       </body>
     </html>

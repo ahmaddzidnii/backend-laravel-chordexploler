@@ -1,11 +1,11 @@
-import axios from "axios";
-import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { COOKIE_NAME_ACCESS_TOKEN } from "@/config/cookies";
+import { axiosAuthenticatedInstance } from "@/lib/axiosAuthenticatedInstance";
 
 export function useLogout() {
   const router = useRouter();
@@ -16,15 +16,18 @@ export function useLogout() {
   const logout = ({ onError }: { onError?: (error: unknown) => void }) => {
     setIsLoadingLogout(true);
 
-    const logoutPromise = axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
-      headers: {
-        Authorization: `Bearer ${getCookie(COOKIE_NAME_ACCESS_TOKEN)}`,
-      },
-      withCredentials: true,
-    });
+    const logoutPromise = axiosAuthenticatedInstance.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+      {
+        headers: {
+          Authorization: `Bearer ${getCookie(COOKIE_NAME_ACCESS_TOKEN)}`,
+        },
+        withCredentials: true,
+      }
+    );
 
     toast.promise(logoutPromise, {
-      loading: "Logging out...",
+      pending: "Logging out...",
       success: "Logged out successfully",
       error: "Failed to logout",
     });

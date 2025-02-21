@@ -1,6 +1,5 @@
 "use client";
 
-import toast from "react-hot-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Tiptap from "@/components/Tiptap";
+
 import { useSectionFormStore } from "../../store/useSectionForm";
 import { useCreateSection } from "../../hooks/useCreateSection";
 import {
@@ -43,26 +43,19 @@ const SectionForm = () => {
   });
 
   const handleSubmit = (values: z.infer<typeof formCreateSectionSchema>) => {
-    toast.promise(
-      createSection.mutateAsync(
-        {
-          ...values,
-          start_time: parseInt(values.start_time),
-          end_time: parseInt(values.end_time),
-          song_id: songId,
-        },
-        {
-          onSuccess: () => {
-            form.reset();
-
-            disableEditing();
-          },
-        }
-      ),
+    createSection.mutate(
       {
-        loading: "Creating section...",
-        success: "Section created",
-        error: "Failed to create section",
+        ...values,
+        start_time: parseInt(values.start_time),
+        end_time: parseInt(values.end_time),
+        song_id: songId,
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+
+          disableEditing();
+        },
       }
     );
   };

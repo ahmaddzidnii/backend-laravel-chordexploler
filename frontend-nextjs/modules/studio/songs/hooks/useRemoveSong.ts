@@ -1,6 +1,7 @@
+import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { removeSong } from "../api";
-import { toast } from "react-hot-toast";
 
 export const useRemoveSong = () => {
   const queryClient = useQueryClient();
@@ -8,7 +9,7 @@ export const useRemoveSong = () => {
   return useMutation({
     mutationFn: async (values: string[]) => {
       return toast.promise(removeSong(values), {
-        loading: "Removing song...",
+        pending: "Removing song...",
         success: "Song removed successfully",
         error: "Failed to remove song",
       });
