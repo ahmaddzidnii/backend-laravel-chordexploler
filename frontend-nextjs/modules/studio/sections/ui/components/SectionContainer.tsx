@@ -5,13 +5,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 
 import { cn } from "@/lib/utils";
-import { SectionItem } from "./SectionItem";
 import { useSongId } from "@/hooks/useSongId";
-import { DataRenderer } from "@/components/DataRenderer";
-import { useGetSectionsBySongId } from "../hooks/useGetSections";
-import { useReorderSection } from "../hooks/useReorderSection";
-import { useSelectedListSectionStore } from "../store/useSelectedListSectionStore";
 import { EmptyDataFallback } from "@/components/EmptyDataFalback";
+import { DataRenderer } from "@/components/DataRenderer";
+
+import { SectionItem } from "./SectionItem";
+import { useReorderSection } from "../../hooks/useReorderSection";
+import { useGetSectionsBySongId } from "../../hooks/useGetSections";
+import { useSelectedListSectionStore } from "../../store/useSelectedListSectionStore";
 
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   const result = Array.from(list);

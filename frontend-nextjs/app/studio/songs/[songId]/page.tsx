@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { SongInfo } from "./SongInfo";
-import { SectionView } from "@/features/sections/view/SectionView";
+import { SectionView } from "@/modules/studio/sections/ui/view/SectionView";
 
 export const metadata: Metadata = {
   title: "Song Details",

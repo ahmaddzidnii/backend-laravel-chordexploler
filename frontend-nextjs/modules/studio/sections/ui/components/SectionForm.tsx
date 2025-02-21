@@ -8,8 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Tiptap from "@/components/Tiptap";
-import { useSectionFormStore } from "./store/useSectionForm";
-import { useCreateSection } from "../hooks/useCreateSection";
+import { useSectionFormStore } from "../../store/useSectionForm";
+import { useCreateSection } from "../../hooks/useCreateSection";
 import {
   Form,
   FormControl,

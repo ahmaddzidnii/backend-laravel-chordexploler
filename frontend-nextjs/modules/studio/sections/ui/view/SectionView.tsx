@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { Button } from "@/components/ui/button";
-import { useSectionFormStore } from "../components/store/useSectionForm";
-import { SectionContainer } from "../components/SectionContainer";
-import SectionForm from "../components/SectionForm";
+import { useSectionFormStore } from "../../store/useSectionForm";
+import { SectionContainer } from "@/modules/studio/sections/ui/components/SectionContainer";
+import SectionForm from "@/modules/studio/sections/ui/components/SectionForm";
 
 import {
   Drawer,
@@ -17,9 +17,9 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { useSelectedListSectionStore } from "../store/useSelectedListSectionStore";
+import { useSelectedListSectionStore } from "../../store/useSelectedListSectionStore";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useDeleteSection } from "../hooks/useDeleteSection";
+import { useDeleteSection } from "@/modules/studio/sections/hooks/useDeleteSection";
 import { useConfirm } from "@/hooks/useConfirm";
 
 export const SectionView = () => {

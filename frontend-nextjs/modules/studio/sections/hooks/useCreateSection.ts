@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createSection } from "../api";
+import { createSection } from "@/modules/studio/sections/api";
 
 type InputRequest = {
   name: string;
