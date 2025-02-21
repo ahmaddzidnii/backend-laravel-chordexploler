@@ -6,8 +6,6 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import Document from "@tiptap/extension-document";
 
-import { processChordText, processChordTextNew } from "@/utils/processChordText";
-
 interface TiptapProps {
   content?: string;
   onUpdate?: (content: string) => void;

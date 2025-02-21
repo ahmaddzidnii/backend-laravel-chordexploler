@@ -4,15 +4,14 @@ import { useRef } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "./ui/input";
-import { AuthUser } from "@/types";
 import ProfileDropdown from "@/features/auth/components/ProfileDropdown";
 import ApplicationLogo from "./Logo";
 import AddEntityDropdown from "./AddEntityDropdown";
 import { MenuSidebarButton } from "./MenuSidebarButton";
+import { UserPicture } from "@/modules/users/ui/components/UserPicture";
 
-const Navbar = ({ user }: { user: AuthUser | null }) => {
+const Navbar = () => {
   const formSearchRef = useRef<HTMLFormElement>(null);
 
   const handleResetButton = () => {
@@ -45,17 +44,9 @@ const Navbar = ({ user }: { user: AuthUser | null }) => {
         <div className="mr-4">
           <AddEntityDropdown />
         </div>
-        <ProfileDropdown user={user}>
+        <ProfileDropdown>
           <button>
-            <Avatar className="size-9">
-              <AvatarImage
-                src={
-                  user?.avatar ??
-                  "https://is3.cloudhost.id/chordexploler/chordexploler/images/124599.jpeg"
-                }
-              />
-              <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
-            </Avatar>
+            <UserPicture />
           </button>
         </ProfileDropdown>
       </div>

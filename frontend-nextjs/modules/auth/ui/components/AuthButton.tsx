@@ -6,7 +6,7 @@ import { useRouter } from "nextjs-toploader/app";
 
 import { Button } from "@/components/ui/button";
 import { UserButton } from "./UserButton";
-import { useUser } from "@/features/auth/hooks/useUser";
+import { useUser } from "@/modules/auth/hooks/useUser";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const AuthButton = () => {

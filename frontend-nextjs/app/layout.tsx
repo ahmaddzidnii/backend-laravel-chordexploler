@@ -14,6 +14,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {

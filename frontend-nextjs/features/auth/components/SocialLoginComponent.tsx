@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 const SocialLoginComponent = () => {
   const searchParams = useSearchParams();
-  const { login, isLoadingLogin } = useLoginWithGoogle();
+  const { login } = useLoginWithGoogle();
   const handleGoogleLogin = () => {
     const state = searchParams.get("state");
 
@@ -20,7 +20,6 @@ const SocialLoginComponent = () => {
   return (
     <div className="w-full flex gap-5">
       <button
-        disabled={isLoadingLogin}
         onClick={handleGoogleLogin}
         className="w-full border rounded-sm p-3 flex items-center justify-center hover:bg-gray-100 hover:scale-105 transition-all disabled:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-70"
       >

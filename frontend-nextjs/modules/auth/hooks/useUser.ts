@@ -17,6 +17,7 @@ export const useUser = () => {
     enabled: isAuthenticated,
     refetchOnWindowFocus: false,
     retry: false,
+    staleTime: 10 * 60 * 1000,
   });
 
   const user: AuthUser = {

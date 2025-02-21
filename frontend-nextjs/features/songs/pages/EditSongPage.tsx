@@ -1,7 +1,7 @@
 "use client";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
-import { useGetSongById } from "../hooks/useGetSongById";
+// import { useGetSongById } from "../hooks/useGetSongById";
 
 function EditSongPage() {
   //   const params = useParams<{ songId: string }>();

@@ -10,11 +10,12 @@ import { usePathname } from "next/navigation";
 import { SiGoogleanalytics } from "react-icons/si";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-import { AuthUser } from "@/types";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { SidebarItem } from "./SidebarItem";
+import { useUser } from "@/modules/auth/hooks/useUser";
+import { Loader2Icon } from "lucide-react";
 
 const sidebars = {
   MID_SECTION: [
@@ -45,23 +46,47 @@ const sidebars = {
   ],
 };
 
-const Sidebar = ({ user }: { user: AuthUser | null }) => {
+const ProfileUserSidebar = () => {
+  const { user, isError, isLoading } = useUser();
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[208px] flex items-center justify-center ">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full h-[208px] flex items-center justify-center ">
+        <span>Something went wrong!</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-[208px] flex items-center flex-col justify-center">
+      <Avatar className="size-28">
+        <AvatarImage src={user?.avatar} />
+        <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
+      </Avatar>
+      <div className="text-center mt-2">
+        <span className="text-xl font-bold">Channel Anda</span>
+        <p className="text-sm">{user?.name ?? "Placeholder"}</p>
+      </div>
+    </div>
+  );
+};
+
+const Sidebar = () => {
   const pathname = usePathname();
 
   return (
     <>
-      <SidebarMobile user={user} />
+      <SidebarMobile />
       <div className="w-[255px] border-r  flex-col justify-between h-[calc(100vh-56px)] ml-4 hidden xl:flex">
-        <div className="w-full h-[208px] flex items-center flex-col justify-center">
-          <Avatar className="size-28">
-            <AvatarImage src={user?.avatar} />
-            <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
-          </Avatar>
-          <div className="text-center mt-2">
-            <span className="text-xl font-bold">Channel Anda</span>
-            <p className="text-sm">{user?.name ?? "Placeholder"}</p>
-          </div>
-        </div>
+        <ProfileUserSidebar />
         <ul className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-thin pr-3">
           {sidebars["MID_SECTION"].map((sidebar, index) => (
             <SidebarItem
@@ -88,7 +113,7 @@ const Sidebar = ({ user }: { user: AuthUser | null }) => {
   );
 };
 
-const SidebarMobile = ({ user }: { user: AuthUser | null }) => {
+const SidebarMobile = () => {
   const { isOpen, toggle, close } = useSidebarStore();
   const pathname = usePathname();
 
@@ -108,16 +133,7 @@ const SidebarMobile = ({ user }: { user: AuthUser | null }) => {
         <VisuallyHidden>
           <SheetTitle>Menu</SheetTitle>
         </VisuallyHidden>
-        <div className="w-full h-[208px] flex items-center flex-col justify-center">
-          <Avatar className="size-28">
-            <AvatarImage src={user?.avatar} />
-            <AvatarFallback>{user?.name.charAt(0).toUpperCase() ?? "Err"}</AvatarFallback>
-          </Avatar>
-          <div className="text-center mt-2">
-            <span className="text-xl font-bold">Channel Anda</span>
-            <p className="text-sm">{user?.name ?? "Placeholder"}</p>
-          </div>
-        </div>
+        <ProfileUserSidebar />
         <ul className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-thin pr-3">
           {sidebars["MID_SECTION"].map((sidebar, index) => (
             <SidebarItem

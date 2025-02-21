@@ -29,7 +29,10 @@ export interface Daum {
   artist: string[];
   slug: string;
   status: string;
-  genre: string[];
+  genres: {
+    id: string;
+    name: string;
+  }[];
   cover: string;
   youtube_url: string;
   released_year: number;
@@ -66,7 +69,6 @@ export const createSong = async (data: FormData) => {
       artist: string[];
       slug: string;
       status: string;
-      genre: string[];
       cover: string;
       youtube_url: string;
       released_year: number;

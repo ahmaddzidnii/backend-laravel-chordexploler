@@ -7,7 +7,10 @@ export type SogInfoResponseType = ApiResponseWithoutPaginationType<{
   artist: string[];
   slug: string;
   status: string;
-  genre: string[];
+  genres: {
+    id: string;
+    name: string;
+  }[];
   cover: string;
   youtube_url: string;
   released_year: number;

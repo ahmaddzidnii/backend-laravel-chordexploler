@@ -14,7 +14,7 @@ const SongIdPage = () => {
     <div className="mx-4 space-y-4">
       <header className="w-full h-[55px]">
         <Link
-          href="/songs"
+          href="/studio/songs"
           className="text-[25px] pt-[23px] w-max font-bold flex items-center"
         >
           <FaArrowLeft className="size-6 mr-3" />

@@ -1,16 +1,18 @@
 "use client";
-import { Music2, User } from "lucide-react";
-import { DataRenderer } from "@/components/DataRenderer";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { ReactPlayerComponent } from "@/features/react-player/ReactPlayer";
-import { useGetSongById } from "@/features/songs/hooks/useGetSongById";
-import { useParams } from "next/navigation";
+
 import Link from "next/link";
 import { Fragment } from "react";
+import { useParams } from "next/navigation";
+import { Music2, User } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import { DataRenderer } from "@/components/DataRenderer";
+import { useGetSongById } from "@/features/songs/hooks/useGetSongById";
+import { ReactPlayerComponent } from "@/features/react-player/ReactPlayer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const SongInfo = () => {
   const songId = useParams<{
@@ -50,14 +52,20 @@ export const SongInfo = () => {
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Genres</span>
               <div className="flex gap-2 flex-wrap">
-                {data?.genre.map((g, i) => (
-                  <Badge
-                    key={i}
-                    variant="outline"
-                  >
-                    {g}
-                  </Badge>
-                ))}
+                <DataRenderer
+                  data={data?.genres}
+                  fallback="No genre"
+                  render={(genre) => {
+                    return (
+                      <Badge
+                        key={genre.id}
+                        variant="outline"
+                      >
+                        {genre.name}
+                      </Badge>
+                    );
+                  }}
+                />
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -79,7 +87,7 @@ export const SongInfo = () => {
           className="w-full"
           asChild
         >
-          <Link href="/songs/1/edit">Edit Song</Link>
+          <Link href={`/studio/songs/${song?.data?.data.id}/edit`}>Edit Song</Link>
         </Button>
       </div>
 

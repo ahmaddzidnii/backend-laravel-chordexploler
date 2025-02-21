@@ -1,19 +1,17 @@
 import { PropsWithChildren } from "react";
 
-import { Navbar, NavbarSpacer } from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { getAuth } from "@/helpers/getAuth";
 import ClientProvider from "@/providers/ClientProvider";
+import { Navbar, NavbarSpacer } from "@/components/Navbar";
 
 const ApplicationLayout = async ({ children }: PropsWithChildren) => {
-  const { user } = await getAuth();
   return (
     <ClientProvider>
       <div className="h-screen w-full overflow-hidden">
-        <Navbar user={user!} />
+        <Navbar />
         <NavbarSpacer />
         <div className="flex">
-          <Sidebar user={user} />
+          <Sidebar />
           <main className="flex-1 h-[calc(100vh-64px)] overflow-y-auto overflow-x-hidden scrollbar-thin">
             {children}
           </main>

@@ -13,16 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AuthUser } from "@/types";
 import { useLogout } from "../hooks/useLogout";
+import { useUser } from "../../../modules/auth/hooks/useUser";
 
-export default function ProfileDropdown({
-  children,
-  user,
-}: React.PropsWithChildren<{
-  user: AuthUser | null;
-}>) {
+export default function ProfileDropdown({ children }: React.PropsWithChildren<{}>) {
   const { logout } = useLogout();
+  const { user } = useUser();
   const { theme, setTheme } = useTheme();
   const menus = [
     [

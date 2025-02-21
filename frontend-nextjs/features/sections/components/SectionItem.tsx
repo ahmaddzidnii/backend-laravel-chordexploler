@@ -2,7 +2,7 @@ import { Clock } from "lucide-react";
 import { Draggable } from "@hello-pangea/dnd";
 import { formatSecondsToReadableTime } from "@/utils/formatTime";
 import { Checkbox } from "@/components/ui/checkbox";
-import { processChordText, processChordTextNew } from "@/utils/processChordText";
+import { processChordTextNew } from "@/utils/processChordText";
 import { useSelectedListSectionStore } from "../store/useSelectedListSectionStore";
 
 interface SectionItemProps {
