@@ -1,10 +1,26 @@
-# compose.yaml
+version: "3.8"
+
 services:
-  frankenphp:
-    build:
-      context: .
-    entrypoint: php artisan octane:frankenphp --workers=1 --max-requests=1
+  redis:
+    image: redis:latest
+    container_name: redis_server
+    restart: always
     ports:
-      - "8001:8000"
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - .:/app
+      - redis_data:/data
+
+volumes:
+  redis_data:
+    driver: local
+
+  # frankenphp:
+  #   build:
+  #     context: .
+  #   entrypoint: php artisan octane:frankenphp --workers=1 --max-requests=1
+  #   ports:
+  #     - "8001:8000"
+  #   volumes:
+  #     - .:/app

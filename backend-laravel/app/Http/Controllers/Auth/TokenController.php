@@ -69,6 +69,7 @@ class TokenController extends Controller
             name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
             value: $data['access_token'],
             secure: env('APP_ENV') != 'local',
+            minutes: config('jwt.COOKIE_EXPIRE_ACCESS_TOKEN'),
             httpOnly: false
         );
 

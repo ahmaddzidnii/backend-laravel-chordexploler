@@ -26,12 +26,14 @@ class GoogleController extends Controller
             name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
             value: $accessToken,
             secure: env('APP_ENV') != 'local',
+            minutes: config('cookies.COOKIE_EXPIRE_ACCESS_TOKEN'),
             httpOnly: false
         );
         $cookieRefreshToken = cookie(
             name: config('cookies.COOKIE_NAME_REFRESH_TOKEN'),
             value: $refreshToken,
             secure: env('APP_ENV') != 'local',
+            minutes: config('cookies.COOKIE_EXPIRE_REFRESH_TOKEN'),
             httpOnly: true
         );
 
