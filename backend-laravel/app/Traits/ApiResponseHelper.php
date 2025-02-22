@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Song;
 
 trait ApiResponseHelper
 {
@@ -25,7 +24,7 @@ trait ApiResponseHelper
     {
         $response = [
             'code' => $code,
-            'error' => $error,
+            'errors' => $error,
         ];
 
         return response()->json($response, $code);
