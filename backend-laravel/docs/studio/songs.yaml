@@ -1,0 +1,458 @@
+openapi: "3.0.3"
+info:
+  title: Studio/Songs API - ChordXplorer
+  description: API documentation for Songs Studio.
+  version: "1.0"
+servers:
+  - url: http://localhost:8000/api/studio
+paths:
+  /songs:
+    get:
+      summary: Get all songs
+      description: Fetch a list of available songs.
+      parameters:
+        - name: limit
+          in: query
+          description: Number of songs to return
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: page
+          in: query
+          description: Request by page
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: Authorization
+          in: header
+          description: Optionally, when not sent via cookie
+          required: false
+          schema:
+            type: string
+        - name: CHEXPDEV_ACC_TKN
+          in: cookie
+          description: Optionally, when not sent via headers
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of songs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  pagination:
+                    type: object
+                    properties:
+                      last_visible_page:
+                        type: integer
+                      has_next_page:
+                        type: boolean
+                      has_prev_page:
+                        type: boolean
+                      current_page:
+                        type: integer
+                      items:
+                        type: object
+                        properties:
+                          per_page:
+                            type: integer
+                          count:
+                            type: integer
+                          total:
+                            type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "01jmm62absekkp3qek0xxsncen"
+                        user_id:
+                          type: string
+                          example: "01jm9fwce77cp2c6wft0a0mzgt"
+                        title:
+                          type: string
+                          example: "Hilang Tanpa Bilang"
+                        artists:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Meiska"]
+                        slug:
+                          type: string
+                          example: "meiska-hilang-tanpa-bilang-chxp67b86acb1b6ec"
+                        visibility:
+                          type: string
+                          example: "draft or published"
+                        genres:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Pop", "Romance"]
+                        cover:
+                          type: string
+                          example: "https://chordexplorer.is3.cloudhost.id/chordexplorer/images/songs/cover/chxp67b86acb26437-01jm9fwce77cp2c6wft0a0mzgt.jpg"
+                        youtube_url:
+                          type: string
+                          example: "https://youtu.be/pG1I44GeN-Q?si=BBJHNDL370AUqXXb"
+                        released_year:
+                          type: integer
+                          example: 2023
+                        publisher:
+                          type: string
+                          example: "Sony Music Publishing Indonesia"
+                        bpm:
+                          type: integer
+                          example: 120
+                        keys:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: "01jm9fhymq4rt140kjxvgzvctm"
+                              key:
+                                type: string
+                                example: "D#"
+                              family_name:
+                                type: string
+                                example: "Mayor"
+                              family:
+                                type: string
+                                example: "D#, Fm, Gm, G#, A#, Cm, Ddim"
+                        engagement_metrics:
+                          type: object
+                          properties:
+                            view_count:
+                              type: integer
+                              example: 100
+                            like_count:
+                              type: integer
+                              example: 10
+                            dislike_count:
+                              type: integer
+                              example: 5
+                            share_count:
+                              type: integer
+                              example: 20
+                            comment_count:
+                              type: integer
+                              example: 2
+                        created_at:
+                          type: string
+                          example: "2023-03-01T00:00:00.000000Z"
+                        updated_at:
+                          type: string
+                          example: "2023-03-01T00:00:00.000000Z"
+    post:
+      summary: Create a new song
+      description: Create a new song with the provided details.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Optionally, when not sent via cookie
+          required: false
+          schema:
+            type: string
+        - name: CHEXPDEV_ACC_TKN
+          in: cookie
+          description: Optionally, when not sent via headers
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data::
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Hilang Tanpa Bilang"
+                artists:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Meiska"]
+                genres:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Pop", "Romance"]
+                cover:
+                  type: string
+                  format: binary
+                  example: "https://chordexplorer.is3.cloudhost.id/chordexplorer/images/songs/cover/chxp67b86acb26437-01jm9fwce77cp2c6wft0a0mzgt.jpg"
+                youtube_url:
+                  type: string
+                  example: "https://youtu.be/pG1I44GeN-Q?si=BBJHNDL370AUqXXb"
+                released_year:
+                  type: integer
+                  example: 2023
+                publisher:
+                  type: string
+                  example: "Sony Music Publishing Indonesia"
+                bpm:
+                  type: integer
+                  example: 120
+                keys:
+                  type: array
+                  items:
+                    type: string
+                  example: ["D#", "Fm", "Gm", "G#", "A#", "Cm", "Ddim"]
+      responses:
+        "200":
+          description: Song created successfully
+    patch:
+      summary: Update an existing song
+      description: Update an existing song with the provided details.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Optionally, when not sent via cookie
+          required: false
+          schema:
+            type: string
+        - name: CHEXPDEV_ACC_TKN
+          in: cookie
+          description: Optionally, when not sent via headers
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data::
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Hilang Tanpa Bilang"
+                artists:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Meiska"]
+                genres:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Pop", "Romance"]
+                cover:
+                  type: string
+                  format: binary
+                  example: "https://chordexplorer.is3.cloudhost.id/chordexplorer/images/songs/cover/chxp67b86acb26437-01jm9fwce77cp2c6wft0a0mzgt.jpg"
+                youtube_url:
+                  type: string
+                  example: "https://youtu.be/pG1I44GeN-Q?si=BBJHNDL370AUqXXb"
+                released_year:
+                  type: integer
+                  example: 2023
+                publisher:
+                  type: string
+                  example: "Sony Music Publishing Indonesia"
+                bpm:
+                  type: integer
+                  example: 120
+                keys:
+                  type: array
+                  items:
+                    type: string
+                  example: ["D#", "Fm", "Gm", "G#", "A#", "Cm", "Ddim"]
+      responses:
+        "204":
+          description: Songs deleted successfully
+        "404":
+          description: Songs not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  errors:
+                    type: array
+                    items:
+                      type: string
+    delete:
+      summary: Bulk delete songs
+      description: Delete existing songs by their IDs.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Optionally, when not sent via cookie
+          required: false
+          schema:
+            type: string
+        - name: CHEXPDEV_ACC_TKN
+          in: cookie
+          description: Optionally, when not sent via headers
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: List of song IDs to delete
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    ["01jmm62absekkp3qek0xxsncen", "01jmm62absekkp3qek0xxsncen"]
+      responses:
+        "204":
+          description: Songs deleted successfully
+        "404":
+          description: Songs not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /songs/{id}:
+    get:
+      summary: Get song details
+      description: Retrieve details of a specific song by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the song
+          schema:
+            type: string
+            example: "01jmm62absekkp3qek0xxsncen"
+      responses:
+        "200":
+          description: Song details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "01jmm62absekkp3qek0xxsncen"
+                      user_id:
+                        type: string
+                        example: "01jm9fwce77cp2c6wft0a0mzgt"
+                      title:
+                        type: string
+                        example: "Hilang Tanpa Bilang"
+                      artists:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Meiska"]
+                      slug:
+                        type: string
+                        example: "meiska-hilang-tanpa-bilang-chxp67b86acb1b6ec"
+                      visibility:
+                        type: string
+                        example: "draft or published"
+                      genres:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Pop", "Romance"]
+                      cover:
+                        type: string
+                        example: "https://chordexplorer.is3.cloudhost.id/chordexplorer/images/songs/cover/chxp67b86acb26437-01jm9fwce77cp2c6wft0a0mzgt.jpg"
+                      youtube_url:
+                        type: string
+                        example: "https://youtu.be/pG1I44GeN-Q?si=BBJHNDL370AUqXXb"
+                      released_year:
+                        type: integer
+                        example: 2023
+                      publisher:
+                        type: string
+                        example: "Sony Music Publishing Indonesia"
+                      bpm:
+                        type: integer
+                        example: 120
+                      keys:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "01jm9fhymq4rt140kjxvgzvctm"
+                            key:
+                              type: string
+                              example: "D#"
+                            family_name:
+                              type: string
+                              example: "Mayor"
+                            family:
+                              type: string
+                              example: "D#, Fm, Gm, G#, A#, Cm, Ddim"
+                      engagement_metrics:
+                        type: object
+                        properties:
+                          view_count:
+                            type: integer
+                            example: 100
+                          like_count:
+                            type: integer
+                            example: 10
+                          dislike_count:
+                            type: integer
+                            example: 5
+                          share_count:
+                            type: integer
+                            example: 20
+                          comment_count:
+                            type: integer
+                            example: 2
+                      created_at:
+                        type: string
+                        example: "2023-03-01T00:00:00.000000Z"
+                      updated_at:
+                        type: string
+                        example: "2023-03-01T00:00:00.000000Z"
+        "404":
+          description: Songs not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  errors:
+                    type: array
+                    items:
+                      type: string
