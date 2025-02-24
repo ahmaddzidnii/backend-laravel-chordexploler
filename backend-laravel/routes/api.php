@@ -20,6 +20,10 @@ use App\Http\Controllers\Core\RecommendationController;
 |--------------------------------------------------------------------------
 */
 
+Route::get("/phpinfo", function () {
+    return phpinfo();
+});
+
 Route::group(['middleware' => 'throttle:api'], function () {
     /*
     |--------------------------------------------------------------------------
