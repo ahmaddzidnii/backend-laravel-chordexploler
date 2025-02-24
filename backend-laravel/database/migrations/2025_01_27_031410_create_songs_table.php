@@ -23,7 +23,8 @@ return new class extends Migration
             $table->integer('released_year')->nullable();
             $table->string('publisher')->nullable();
             $table->string('bpm')->nullable();
-            $table->unsignedBigInteger('views')->default(0);
+            $table->unsignedBigInteger('view_count')->default(0);
+            $table->unsignedBigInteger('share_count')->default(0);
             $table->timestamps();
 
             $table->foreignUlid('user_id')->nullable()->constrained('users', 'id')->onDelete('cascade');

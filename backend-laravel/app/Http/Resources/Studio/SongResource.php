@@ -18,9 +18,9 @@ class SongResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'title' => $this->title,
-            'artist' => array_map('trim', explode(',', $this->artist)),
+            'artists' => array_map('trim', explode(',', $this->artist)),
             'slug' => $this->slug,
-            'status' => $this->status,
+            'visibility' => $this->status,
             'genres' => $this->when(
                 $this->relationLoaded('genres'),
                 $this->genres->select('id', 'name')
@@ -39,9 +39,10 @@ class SongResource extends JsonResource
                 $this->keys->select('id', 'key', 'family_name', 'family')
             ),
             'engagement_metrics' => [
-                'view_count' => $this->views,
+                'view_count' => $this->view_count,
                 'like_count' => 5647384,
                 'dislike_count' => 1,
+                'share_count' => $this->share_count,
                 'comment_count' => 897656,
 
             ],

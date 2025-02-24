@@ -1,26 +1,19 @@
-version: "3.8"
-
+version: "3"
 services:
-  redis:
-    image: redis:latest
-    container_name: redis_server
-    restart: always
+  frankenphp:
+    build:
+      context: .
+      dockerfile: Dockerfile # Tambahkan baris ini
     ports:
-      - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - "9000:8000"
     volumes:
-      - redis_data:/data
-
-volumes:
-  redis_data:
-    driver: local
-
-  # frankenphp:
-  #   build:
-  #     context: .
-  #   entrypoint: php artisan octane:frankenphp --workers=1 --max-requests=1
-  #   ports:
-  #     - "8001:8000"
-  #   volumes:
-  #     - .:/app
+      - .:/app
+# services:
+#   frankenphp:
+#     build:
+#       context: .
+#     entrypoint: php artisan octane:frankenphp
+#     ports:
+#       - "9000:8000"
+#     volumes:
+#       - .:/app
