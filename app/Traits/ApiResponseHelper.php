@@ -20,11 +20,13 @@ trait ApiResponseHelper
         return response()->json($response, $code);
     }
 
-    public function errorResponse($error, $code = 400)
+    public function errorResponse(mixed $error, $code = 400)
     {
         $response = [
-            'code' => $code,
-            'errors' => $error,
+            'error' => array_merge(
+                ['code' => $code],
+                is_array($error) ? $error : ['message' => $error]
+            )
         ];
 
         return response()->json($response, $code);

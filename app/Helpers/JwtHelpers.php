@@ -57,12 +57,13 @@ class JwtHelpers
                 'status' => 200,
             ];
         } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new JwtException('Token has expired', 401);
+            throw new JwtException('The access token expired', 401);
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
-            throw new JwtException('Signature not valid', 401);
+            Log::debug('Error JwtHelpers validateToken:', ['error' => $e->getMessage()]);
+            throw new JwtException('The access token is not valid', 401);
         } catch (\Exception $e) {
             Log::error('Error JwtHelpers validateToken:', ['error' => $e->getMessage()]);
-            throw new JwtException('Token is not valid', 401);
+            throw new JwtException('The access token is not valid', 401);
         }
     }
 }
