@@ -60,6 +60,10 @@ class TokenController extends Controller
         // Get refresh token from cookie, bearer token, or query string
         $refreshToken = $request->cookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN')) ?? $request->bearerToken() ?? $request->query('refresh_token');
 
+        if (!$refreshToken) {
+            throw new AuthException('The refresh token is required');
+        }
+
         $data = $this->authService->refreshAccessToken($refreshToken);
         $newAccessTokenCookie = cookie(
             name: config('cookies.COOKIE_NAME_ACCESS_TOKEN'),
@@ -76,6 +80,10 @@ class TokenController extends Controller
     {
         $refreshToken = $request->cookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN')) ?? $request->bearerToken() ?? $request->query('refresh_token');
         $accessToken = $request->bearerToken() ?? $request->query('access_token') ?? $request->cookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
+
+        if (!$refreshToken) {
+            throw new AuthException('The refresh token is required');
+        }
 
         try {
             $this->jwtHelpers->validateToken($refreshToken);
