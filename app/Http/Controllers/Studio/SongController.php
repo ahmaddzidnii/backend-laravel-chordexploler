@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Studio;
 
-use App\Helpers\UniqueIdGenerator;
+use App\Helpers\JsonResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SongCreateRequest;
 use App\Http\Requests\SongUpdateRequest;
@@ -10,6 +10,7 @@ use App\Http\Resources\Studio\SongResource;
 use App\Models\Song;
 use App\Traits\ApiResponseHelper;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -46,7 +47,20 @@ class SongController extends Controller
         $userId = authContext()->getAuthUser()->sub;
 
         $songs = Song::without('sections')->with(['keys', 'genres'])->where('user_id', $userId)->orderBy('created_at', 'desc')->paginate($limit);
-        return $this->successResponse(SongResource::collection($songs->items()), pagination: $this->getPaginationData($songs));
+
+        $respose = JsonResponseBuilder::jsonResponseCollectionSuccess(
+            SongResource::collection($songs->items()),
+            'songListResponse',
+            $songs->count(),
+            $songs->perPage(),
+            $songs->total(),
+            $songs->lastPage(),
+            $songs->hasMorePages(),
+            $songs->onFirstPage(),
+            'songs'
+        );
+
+        return $this->successResponse($respose);
     }
 
     public function store(SongCreateRequest $request)
@@ -132,9 +146,7 @@ class SongController extends Controller
             if (! $path) {
                 DB::rollBack();
 
-                return response()->json([
-                    'error' => 'Failed to upload image.',
-                ], 500);
+                return $this->errorResponse('Failed to upload image.', Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             // create link to s3
@@ -142,9 +154,10 @@ class SongController extends Controller
             $song->cover = $url;
             $song->save();
 
-            DB::commit();
+            $response = JsonResponseBuilder::jsonResponseMessageOnly('Song created successfully.', 'songCreateResponse');
 
-            return $this->successResponse(new SongResource($song), 201);
+            DB::commit();
+            return $this->successResponse($response, Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -166,10 +179,15 @@ class SongController extends Controller
             return $this->errorResponse('You are not authorized to access this song.', 403);
         }
 
-        return $this->successResponse(new SongResource($song));
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            new SongResource($song),
+            'songDetailResponse',
+        );
+
+        return $this->successResponse($response);
     }
 
-    public function update(SongUpdateRequest $request, string $id)
+    public function update(SongUpdateRequest $request)
     {
         $validated = $request->validated();
         $userId = authContext()->getAuthUser()->sub;
@@ -179,12 +197,12 @@ class SongController extends Controller
 
             // Ambil data lagu lama
             $song = Song::where([
-                'id' => $id,
+                'id' => $validated['id'],
                 'user_id' => $userId,
             ])->first();
 
             if (! $song) {
-                return response()->json(['error' => 'Song not found'], 404);
+                return $this->errorResponse('Song not found.', Response::HTTP_NOT_FOUND);
             }
 
             // Simpan URL gambar lama
@@ -276,7 +294,7 @@ class SongController extends Controller
                 if (! $path) {
                     DB::rollBack();
 
-                    return response()->json(['error' => 'Failed to upload image.'], 500);
+                    return $this->errorResponse('Failed to upload image.', Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
 
                 // Hapus gambar lama jika ada
@@ -292,7 +310,9 @@ class SongController extends Controller
 
             DB::commit();
 
-            return $this->successResponse(new SongResource($song), 200);
+            $response = JsonResponseBuilder::jsonResponseMessageOnly('Song updated successfully.', 'songUpdateResponse');
+
+            return $this->successResponse($response, 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -337,6 +357,8 @@ class SongController extends Controller
             throw $th;
         }
 
-        return $this->successResponse('OK', 200);
+        $response = JsonResponseBuilder::jsonResponseMessageOnly('Songs deleted successfully.', 'songDeleteResponse');
+
+        return $this->successResponse($response, 200);
     }
 }

@@ -14,8 +14,11 @@ class SongResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $appName = config('app.name');
+
         return [
             'id' => $this->id,
+            'kind' => "$appName#song",
             'user_id' => $this->user_id,
             'title' => $this->title,
             'artists' => array_map('trim', explode(',', $this->artist)),
@@ -38,7 +41,7 @@ class SongResource extends JsonResource
                 $this->relationLoaded('keys'),
                 $this->keys->select('id', 'key', 'family_name', 'family')
             ),
-            'engagement_metrics' => [
+            'statistics' => [
                 'view_count' => $this->view_count,
                 'like_count' => 5647384,
                 'dislike_count' => 1,

@@ -2,27 +2,32 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
+
 
 trait ApiResponseHelper
 {
     public function successResponse($data, $code = 200, $pagination = null)
     {
-        $response = [
-            'code' => $code,
-        ];
+        // $response = [
+        //     'code' => $code,
+        // ];
 
-        if ($pagination) {
-            $response['pagination'] = $pagination;
-        }
+        // if ($pagination) {
+        //     $response['pagination'] = $pagination;
+        // }
 
-        $response['data'] = $data;
+        // $response['data'] = $data;
 
-        return response()->json($response, $code);
+        // return response()->json($response, $code);
+        return response()->json($data, $code);
     }
 
     public function errorResponse(mixed $error, $code = 400)
     {
         $response = [
+            "api_version" => config("app.version"),
+            "request_id" => Str::uuid7(),
             'error' => array_merge(
                 ['code' => $code],
                 is_array($error) ? $error : ['message' => $error]

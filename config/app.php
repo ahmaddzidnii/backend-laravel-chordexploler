@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'chordxploler'),
+
+    'version' => env('APP_VERSION', '1.0'),
 
     /*
     |--------------------------------------------------------------------------

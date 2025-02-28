@@ -27,7 +27,7 @@ class SongCreateRequest extends FormRequest
             'artist' => ['required', 'string'],
             'key' => ['required'],
             'status' => ['required', Rule::in(['draft', 'published'])],
-            'cover' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5072'],
+            'cover' => ['required', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,svg', 'max:5072'],
             'genre' => ['required'],
             'youtube_url' => ['required', 'string', 'url'],
             'released_year' => ['required', 'numeric'],

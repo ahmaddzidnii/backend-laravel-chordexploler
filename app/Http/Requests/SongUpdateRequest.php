@@ -23,6 +23,7 @@ class SongUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => ['required', 'exists:songs,id'],
             'title' => ['nullable', 'max:255'],
             'artist' => ['nullable'],
             'key' => ['nullable'],
