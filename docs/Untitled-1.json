@@ -1,0 +1,45 @@
+{
+    "data": {
+        "kind": "chordexploler#songListResponse",
+        "current_item_count": 1,
+        "items_per_page": 1,
+        "total_items": 1,
+        "total_pages": 1,
+        "has_next_page": false,
+        "has_previous_page": false,
+        "songs": [
+            {
+                "id": "01jmm62absekkp3qek0xxsncen",
+                "kind": "chordexplorer#song",
+                "user_id": "01jm9fwce77cp2c6wft0a0mzgt",
+                "title": "Hilang Tanpa Bilang",
+                "artists": ["Meiska"],
+                "slug": "meiska-hilang-tanpa-bilang-chxp67b86acb1b6ec",
+                "visibility": "draft or published",
+                "genres": ["Pop", "Romance"],
+                "cover": "https://chordexplorer.is3.cloudhost.id/chordexplorer/images/songs/cover/chxp67b86acb26437-01jm9fwce77cp2c6wft0a0mzgt.jpg",
+                "youtube_url": "https://youtu.be/pG1I44GeN-Q?si=BBJHNDL370AUqXXb",
+                "released_year": 2023,
+                "publisher": "Sony Music Publishing Indonesia",
+                "bpm": 120,
+                "keys": [
+                    {
+                        "id": "01jm9fhymq4rt140kjxvgzvctm",
+                        "key": "D#",
+                        "family_name": "Mayor",
+                        "family": "D#, Fm, Gm, G#, A#, Cm, Ddim"
+                    }
+                ],
+                "statistics": {
+                    "view_count": 100,
+                    "like_count": 10,
+                    "dislike_count": 5,
+                    "share_count": 20,
+                    "comment_count": 2
+                },
+                "created_at": "2023-03-01T00:00:00.000000Z",
+                "updated_at": "2023-03-01T00:00:00.000000Z"
+            }
+        ]
+    }
+}
