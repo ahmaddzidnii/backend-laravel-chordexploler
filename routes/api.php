@@ -68,9 +68,9 @@ Route::group(['middleware' => 'throttle:api'], function () {
             'middleware' => 'jwt.middleware',
         ], function () {
             // Token Management
-            Route::get('refresh', [TokenController::class, 'refresh'])->name('refresh');
             Route::get('logout', [TokenController::class, 'logout'])->name('logout');
         });
+        Route::get('refresh', [TokenController::class, 'refresh'])->name('refresh');
     });
 
     /*

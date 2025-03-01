@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth\Oauth;
 
+use App\Helpers\JsonResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\GoogleCallbackRequest;
 use App\Services\AuthService;
@@ -37,9 +38,14 @@ class GoogleController extends Controller
             httpOnly: true
         );
 
-        return $this->successResponse([
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken,
-        ])->withCookie($cookieRefreshToken)->withCookie($accessTokenCookie);
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            data: [
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+            ],
+            kind: 'auth',
+        );
+
+        return $this->successResponse($response)->withCookie($cookieRefreshToken)->withCookie($accessTokenCookie);
     }
 }

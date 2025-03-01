@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JsonResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Repositories\UserRepository;
@@ -20,6 +21,11 @@ class UserController extends Controller
         $userId = authContext()->getAuthUser()->sub;
         $user = $this->userRepository->findById($userId);
 
-        return $this->successResponse(UserResource::make($user));
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            data: UserResource::make($user),
+            kind: 'user'
+        );
+
+        return $this->successResponse($response);
     }
 }

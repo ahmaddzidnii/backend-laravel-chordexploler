@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\AuthException;
+use App\Helpers\JsonResponseBuilder;
 use App\Helpers\JwtHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
@@ -28,7 +29,12 @@ class TokenController extends Controller
         $user->password = bcrypt($data['password']);
         $user->save();
 
-        return $this->successResponse(new UserResource($user));
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            data: new UserResource($user),
+            kind: 'register',
+        );
+
+        return $this->successResponse($response);
     }
 
     public function login(UserLoginRequest $request)
@@ -49,10 +55,15 @@ class TokenController extends Controller
             httpOnly: true
         );
 
-        return $this->successResponse([
-            'access_token' => $tokens['access_token'],
-            'refresh_token' => $tokens['refresh_token'],
-        ])->withCookie($accessTokenCookie)->withCookie($refreshTokenCookie);
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            data: [
+                'access_token' => $tokens['access_token'],
+                'refresh_token' => $tokens['refresh_token'],
+            ],
+            kind: 'login',
+        );
+
+        return $this->successResponse($response)->withCookie($accessTokenCookie)->withCookie($refreshTokenCookie);
     }
 
     public function refresh(Request $request)
@@ -73,7 +84,12 @@ class TokenController extends Controller
             httpOnly: false
         );
 
-        return $this->successResponse($data)->withCookie($newAccessTokenCookie);
+        $response = JsonResponseBuilder::jsonResponseSingleSuccess(
+            data: $data,
+            kind: 'refresh',
+        );
+
+        return $this->successResponse($response)->withCookie($newAccessTokenCookie);
     }
 
     public function logout(Request $request)
@@ -94,6 +110,11 @@ class TokenController extends Controller
 
         $this->authService->handleLogout($accessToken, $refreshToken);
 
-        return $this->successResponse('OK')->withoutCookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN'))->withoutCookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
+        $response = JsonResponseBuilder::jsonResponseMessageOnly(
+            message: 'Successfully logged out',
+            kind: 'logout',
+        );
+
+        return $this->successResponse($response)->withoutCookie(config('cookies.COOKIE_NAME_REFRESH_TOKEN'))->withoutCookie(config('cookies.COOKIE_NAME_ACCESS_TOKEN'));
     }
 }
